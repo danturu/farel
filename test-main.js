@@ -8,15 +8,13 @@ System.config({
   defaultJSExtensions: true,
 
   paths: {
-    'firebase': '/base/node_modules/firebase/lib/firebase-web.js',
+    'mockfirebase': '/base/node_modules/mockfirebase/browser/mockfirebase.js',
     'src/*': '/base/dist/src/lib/*.js',
   },
+});
 
-  meta: {
-    'firebase': {
-      format: 'cjs',
-    },
-  }
+System.registerDynamic('firebase', ['mockfirebase'], true, (require, exports, module) => {
+  module.exports = require('mockfirebase').MockFirebase;
 });
 
 function onlySpecFiles(path) {

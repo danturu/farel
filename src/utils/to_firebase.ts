@@ -1,9 +1,9 @@
 import * as Firebase from 'firebase'
 
-export const toFirebase = (url: string | Firebase): Firebase => {
-  if (typeof url === 'string') {
-    return new Firebase(url);
+export const toFirebase = (firebaseUrl: string | Firebase): Firebase => {
+  if (typeof firebaseUrl === 'string') {
+    return new Firebase(firebaseUrl);
   } else {
-    return url;
+    return new Firebase(firebaseUrl.toString());
   }
 }

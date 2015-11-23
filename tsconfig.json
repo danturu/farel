@@ -6,6 +6,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
     "preserveConstEnums": true,
     "sourceMap": false,
     "target": "es5"
