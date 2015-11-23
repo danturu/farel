@@ -9,8 +9,15 @@ System.config({
 
   paths: {
     'mockfirebase': '/base/node_modules/mockfirebase/browser/mockfirebase.js',
+    'angular2/*': '/base/node_modules/angular2/bundles/*.js',
     'src/*': '/base/dist/src/lib/*.js',
   },
+
+  meta: {
+    'angular2/*': {
+      format: 'register',
+    },
+  }
 });
 
 System.registerDynamic('firebase', ['mockfirebase'], true, (require, exports, module) => {
