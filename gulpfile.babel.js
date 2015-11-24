@@ -76,7 +76,7 @@ const runKarma = (configFile, done) => {
 }
 
 gulp.task('!test.unit/firebase-server', (done) => {
-  new FirebaseServer(5000, 'test.firebase.localhost');
+  new FirebaseServer(5000, 'test.firebaseio.com');
   done();
 });
 

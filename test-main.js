@@ -5,45 +5,62 @@ __karma__.loaded = function() {};
 System.config({
   baseURL: '/base/dist',
 
-  defaultJSExtensions: true,
-
   paths: {
-    'mockfirebase': '/base/node_modules/mockfirebase/browser/mockfirebase.js',
-    'angular2/*': '/base/node_modules/angular2/bundles/*.js',
-    'src/*': '/base/dist/src/lib/*.js',
+    'angular2/angular2': '/base/node_modules/angular2/bundles/angular2.js',
+    'firebase': '/base/node_modules/firebase/lib/firebase-web.js',
   },
 
   meta: {
-    'angular2/*': {
+    'angular2/angular2': {
       format: 'register',
+    },
+
+    'firebase': {
+      format: 'cjs',
+    }
+  },
+
+  packages: {
+    'src': {
+      defaultExtension: 'js'
+    },
+
+    'test': {
+      defaultExtension: 'js'
     },
   }
 });
 
-System.registerDynamic('firebase', ['mockfirebase'], true, (require, exports, module) => {
-  module.exports = require('mockfirebase').MockFirebase;
-});
+var FIREBASE_URL = 'http://127.0.1:5000/';
 
-function onlySpecFiles(path) {
-  return /_spec\.js$/.test(path);
-}
-
-function importSpecModule(path) {
-  return System.import(path).then(function(module) {
-    if (module.hasOwnProperty('main')) {
-      module.main();
-    } else {
-      throw new Error('Module ' + path + ' does not implement main() method.');
-    }
-  });
-}
-
-Promise.all(Object.keys(window.__karma__.files).filter(onlySpecFiles).map(importSpecModule)).then(
+Promise.all(Object.keys(__karma__.files).filter(isSpecFile).map(importSpecModule)).then(
   function() {
-    __karma__.start();
+    System.import('test/dinosaur_facts').then(function(fixture) {
+      var firebase = new Firebase(FIREBASE_URL);
+
+      beforeEach(() => {
+        firebase.set(fixture.DINOSAUR_FACTS);
+      });
+
+      __karma__.start();
+   });
   },
 
   function(error) {
     __karma__.error(error.stack || error);
   }
 );
+
+function isSpecFile(path) {
+  return /_spec\.js$/.test(path);
+}
+
+function importSpecModule(path) {
+  return System.import(path).then(function(module) {
+    if (module.hasOwnProperty('main')) {
+      module.main(FIREBASE_URL);
+    } else {
+      throw new Error('Module ' + path + ' does not implement main() method.');
+    }
+  });
+}

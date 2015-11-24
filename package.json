@@ -25,7 +25,6 @@
     "karma": "^0.13.15",
     "karma-jasmine": "^0.3.6",
     "merge2": "^0.3.6",
-    "mockfirebase": "^0.12.0",
     "protractor": "^2.5.0",
     "systemjs": "^0.18.10",
     "systemjs-builder": "^0.14.11",
