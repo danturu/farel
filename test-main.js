@@ -35,15 +35,7 @@ var FIREBASE_URL = 'http://127.0.1:5000/';
 
 Promise.all(Object.keys(__karma__.files).filter(isSpecFile).map(importSpecModule)).then(
   function() {
-    System.import('test/dinosaur_facts').then(function(fixture) {
-      var firebase = new Firebase(FIREBASE_URL);
-
-      beforeEach(() => {
-        firebase.set(fixture.DINOSAUR_FACTS);
-      });
-
-      __karma__.start();
-   });
+    __karma__.start();
   },
 
   function(error) {
@@ -52,7 +44,13 @@ Promise.all(Object.keys(__karma__.files).filter(isSpecFile).map(importSpecModule
 );
 
 function isSpecFile(path) {
-  return /_spec\.js$/.test(path);
+  var files = [
+    'jasmine_matchers.js',
+    'dinosaur_facts.js',
+    '_spec.js',
+  ];
+
+  return new RegExp(files.join('|') + '$').test(path);
 }
 
 function importSpecModule(path) {

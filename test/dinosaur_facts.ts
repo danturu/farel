@@ -1,3 +1,13 @@
+import * as Firebase from 'firebase'
+
+export function main(FIREBASE_URL: string) {
+  var firebase = new Firebase(FIREBASE_URL);
+
+  beforeEach(() => {
+    firebase.set(DINOSAUR_FACTS);
+  });
+}
+
 export const DINOSAUR_FACTS = JSON.parse `
   {
     "dinosaurs": {
