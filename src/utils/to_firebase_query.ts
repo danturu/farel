@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 
-import { InvalidFirebaseQueryGivenException } from './invalid_firebase_query_given_exception'
+import { InvalidFirebaseQueryException } from '../invalid_firebase_query_exception'
 
 export function toFirebaseQuery(source: string | FirebaseQuery, context?: any): FirebaseQuery {
   if (typeof source === 'string') {
@@ -11,7 +11,7 @@ export function toFirebaseQuery(source: string | FirebaseQuery, context?: any): 
     return source;
   }
 
-  throw new InvalidFirebaseQueryGivenException(context, source);
+  throw new InvalidFirebaseQueryException(context, source);
 }
 
 export function isFirebaseQuery(object: any): object is Firebase {
@@ -19,5 +19,5 @@ export function isFirebaseQuery(object: any): object is Firebase {
 }
 
 export function isFirebaseQueryEqual(lhs: string | FirebaseQuery, rhs: string | FirebaseQuery): boolean {
-  return !!lhs && !!rhs && lhs.toString() === rhs.toString();
+  return (!lhs && !rhs) || (!!lhs && !!rhs && lhs.toString() === rhs.toString());
 }

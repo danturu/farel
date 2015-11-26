@@ -96,6 +96,7 @@ interface FirebaseQuery {
 	 * Listens for data changes at a particular location.
 	 */
 	on(eventType: string, callback: (dataSnapshot: FirebaseDataSnapshot, prevChildName?: string) => void, cancelCallback?: (error: any) => void, context?: Object): (dataSnapshot: FirebaseDataSnapshot, prevChildName?: string) => void;
+	on(eventType: string, callback: (dataSnapshot: FirebaseDataSnapshot, prevChildName?: string) => void, context?: Object): (dataSnapshot: FirebaseDataSnapshot, prevChildName?: string) => void;
 	/**
 	 * Detaches a callback previously attached with on().
 	 */
