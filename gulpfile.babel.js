@@ -3,6 +3,7 @@ import del from 'del'
 import karma from 'karma'
 import merge from 'merge2'
 import gulp from 'gulp';
+import connect from 'gulp-connect'
 import sequence from 'gulp-sequence'
 import ts from 'gulp-typescript'
 
@@ -24,6 +25,8 @@ gulp.task('clean', done => del(config.dest, done));
 
 // Build
 
+import Builder from 'systemjs-builder'
+
 gulp.task('build.ts', () => {
   let tsResult = gulp.src(`${config.src}/**/*.ts`).pipe(ts(tsProject));
 
@@ -33,18 +36,23 @@ gulp.task('build.ts', () => {
   ]);
 })
 
-gulp.task('build', (done) => sequence('clean', ['build.ts'], done));
+gulp.task('build.html', () =>
+  gulp.src(`${config.src}/**/*.html`).pipe(gulp.dest(config.dest))
+);
 
-// Publish
+gulp.task('build.bundle', ['build.ts'], (done) => {
+  let builder = new Builder(`${__dirname}/dist`, {
+    paths: {
+      'firepipes/*': 'src/*.js',
+    },
 
-import Builder from 'systemjs-builder'
-
-gulp.task('publish.bundle', ['build'], (done) => {
-  let builder = new Builder(`${__dirname}/dist/src`, {
-    defaultJSExtensions: true,
+    packages: {
+      'src': {
+      },
+    },
 
     meta: {
-      'angular2*': {
+      'angular2/angular2': {
         build: false,
       },
 
@@ -54,10 +62,14 @@ gulp.task('publish.bundle', ['build'], (done) => {
     },
   });
 
-  builder.bundle('firepipes.js', config.bundle).catch(console.log.bind(console)).finally(() => done());
+  builder.bundle('src/firepipes', config.bundle).catch(console.log.bind(console)).finally(() => done());
 });
 
-gulp.task('publish', sequence('publish.bundle'));
+gulp.task('build', (done) => sequence('clean', ['build.ts', 'build.html'], done));
+
+// Publish
+
+gulp.task('publish', sequence('build.bundle'));
 
 // Watch
 
@@ -65,7 +77,15 @@ gulp.task('watch.ts', () =>
   gulp.watch(`${config.src}/**/*.ts`, ['build.ts'])
 );
 
-gulp.task('watch', sequence('build', ['watch.ts']));
+gulp.task('watch.html', () =>
+  gulp.watch(`${config.src}/**/*.html`, ['build.html'])
+);
+
+gulp.task('watch.bundle', () =>
+  gulp.watch(`${config.src}/**/*.ts`, ['build.bundle'])
+);
+
+gulp.task('watch', sequence('build', ['watch.ts', 'watch.html']));
 
 // Test
 
@@ -99,4 +119,10 @@ gulp.task('test.unit', () => {
   sequence('build', '!test.unit/firebase-server', '!test.unit/karma-server', () => {
     gulp.watch(`${config.src}/**/*`, { ignoreInitial: true }, () => sequence('build', '!test.unit/karma-run')());
   });
+});
+
+// Serve
+
+gulp.task('serve', ['build.bundle', 'build.html', 'watch.bundle', 'watch.html'], () => {
+  connect.server({ port: '8001', root: '.' });
 });
