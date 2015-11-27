@@ -1,9 +1,9 @@
 import * as Firebase from 'firebase'
 
-import { OrderByChildPipe } from '../../../src/queries/order_by_child_pipe'
+import { EndAtPipe } from '../../../src/queries/end_at_pipe'
 
 export function main(firebaseUrl: string) {
-  describe("OrderByChildPipe", () => {
+  describe("EndAtPipe", () => {
     it("should be tested", () => {
       pending();
     });

@@ -1,9 +1,9 @@
 import * as Firebase from 'firebase'
 
-import { OrderByChildPipe } from '../../../src/queries/order_by_child_pipe'
+import { LimitToFirstPipe } from '../../../src/queries/limit_to_first_pipe'
 
 export function main(firebaseUrl: string) {
-  describe("OrderByChildPipe", () => {
+  describe("LimitToFirstPipe", () => {
     it("should be tested", () => {
       pending();
     });
