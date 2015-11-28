@@ -15,27 +15,27 @@ export function main(FIREBASE_URL: string) {
 
     it('should wrap result when given a string', () => {
       let snapshot: FirebaseDataSnapshot = <any>new MockSnapshot('order', 'theropoda');
-      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'order', $value: 'theropoda' });
+      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'order', $ref: 'ref', $value: 'theropoda' });
     });
 
     it('should wrap result when given a number', () => {
       let snapshot: FirebaseDataSnapshot = <any>new MockSnapshot('length', 1.6);
-      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'length', $value: 1.6 });
+      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'length', $ref: 'ref', $value: 1.6 });
     });
 
     it('should wrap result when given a boolean', () => {
       let snapshot: FirebaseDataSnapshot = <any>new MockSnapshot('vanished', true);
-      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'vanished', $value: true });
+      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'vanished', $ref: 'ref', $value: true });
     });
 
     it('should assign key when given an array', () => {
       let snapshot: FirebaseDataSnapshot = <any>new MockSnapshot('scores', [1, 2, 3]);
-      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'scores', $value: [1, 2, 3] });
+      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'scores', $ref: 'ref', $value: [1, 2, 3] });
     });
 
     it('should assign key when given an object', () => {
       let snapshot: FirebaseDataSnapshot = <any>new MockSnapshot('stegosaurus', { order: 'ornithischia', weight: 2500 });
-      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'stegosaurus', order: 'ornithischia', weight: 2500 });
+      expect(unwrapToObjectWithMeta(snapshot)).toEqual({ $key: 'stegosaurus', $ref: 'ref', order: 'ornithischia', weight: 2500 });
     });
   });
 }
@@ -50,6 +50,10 @@ class MockSnapshot {
 
   val(): any {
     return this._val;
+  }
+
+  ref(): any {
+    return 'ref';
   }
 
   exists(): boolean {
