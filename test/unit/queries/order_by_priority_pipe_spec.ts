@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 
-import { OrderByPriorityPipe } from '../../../src/queries/order_by_priority_pipe'
+import { OrderByPriorityPipe } from '../../../firepipes/queries/order_by_priority_pipe'
 
 export function main(firebaseUrl: string) {
   describe("OrderByPriorityPipe", () => {

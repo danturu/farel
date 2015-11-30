@@ -1,128 +1,179 @@
 import cprocess from 'child_process'
 import del from 'del'
+import dotenv from 'dotenv'
+import gulp from 'gulp';
 import karma from 'karma'
 import merge from 'merge2'
-import gulp from 'gulp';
+import minimist from 'minimist'
 import connect from 'gulp-connect'
 import sequence from 'gulp-sequence'
+import sourcemaps from 'gulp-sourcemaps'
 import ts from 'gulp-typescript'
 
-let tsProject = ts.createProject('tsconfig.json', {
-  typescript: require('typescript'),
-});
+dotenv.load();
 
-let config = {
-  src: '{src,test,typings}',
-
-  dest: 'dist',
-
-  bundle: 'dist/firepipes.js',
-}
+let argv = minimist(process.argv);
 
 // Clean
 
-gulp.task('clean', done => del(config.dest, done));
+gulp.task('clean', done => del('dist', done));
 
 // Build
 
 import Builder from 'systemjs-builder'
 
-gulp.task('build.ts', () => {
-  let tsResult = gulp.src(`${config.src}/**/*.ts`).pipe(ts(tsProject));
+let tsProject = ts.createProject('tsconfig.json', {
+  typescript: require('typescript'),
+});
+
+let bundleConfig = {
+  paths: {
+    'firepipes/*': 'firepipes/*.js',
+  },
+
+  meta: {
+    'angular2/angular2': {
+      build: false,
+    },
+
+    'firebase': {
+      build: false,
+    },
+  },
+};
+
+gulp.task('build.src.js', () => {
+  let result = gulp.src(['{firepipes,typings}/**/*.ts']).pipe(sourcemaps.init()).pipe(ts(tsProject));
 
   return merge([
-    tsResult.dts.pipe(gulp.dest(config.dest)),
-    tsResult.js.pipe(gulp.dest(config.dest)),
+    result.js.pipe(sourcemaps.write()).pipe(gulp.dest('dist')), result.dts.pipe(gulp.dest('dist')),
   ]);
 })
 
-gulp.task('build.html', () =>
-  gulp.src(`${config.src}/**/*.html`).pipe(gulp.dest(config.dest))
-);
+gulp.task('build.test.js', () => {
+  let result = gulp.src(['{test,typings}/**/*.ts']).pipe(sourcemaps.init()).pipe(ts(tsProject));
 
-gulp.task('build.bundle', ['build.ts'], (done) => {
-  let builder = new Builder(`${__dirname}/dist`, {
-    paths: {
-      'firepipes/*': 'src/*.js',
-    },
-
-    packages: {
-      'src': {
-      },
-    },
-
-    meta: {
-      'angular2/angular2': {
-        build: false,
-      },
-
-      'firebase': {
-        build: false,
-      },
-    },
-  });
-
-  builder.bundle('src/firepipes', config.bundle).catch(console.log.bind(console)).finally(() => done());
+  return merge([
+    result.js.pipe(sourcemaps.write()).pipe(gulp.dest('dist')), gulp.src('test/**/*.html', { base: '.' }).pipe(gulp.dest('dist'))
+  ]);
 });
 
-gulp.task('build', (done) => sequence('clean', ['build.ts', 'build.html'], done));
+gulp.task('build.js', done =>
+  sequence('build.src.js', 'build.test.js', done)
+);
 
-// Publish
+gulp.task('build.bundle', () => {
+  let builder = new Builder('dist', bundleConfig);
 
-gulp.task('publish', sequence('build.bundle'));
+  return builder.bundle('firepipes/firepipes', 'dist/firepipes/bundles/firepipes.js', { sourceMaps: true });
+});
+
+gulp.task('build.bundle.min', done => {
+  let builder = new Builder('dist', bundleConfig);
+
+  return builder.bundle('firepipes/firepipes', 'dist/firepipes/bundles/firepipes.min.js', { sourceMaps: true, minify: true });
+});
+
+gulp.task('build.bundle.sfx', () => {
+  let builder = new Builder('dist', bundleConfig);
+
+  return builder.buildStatic('firepipes/firepipes', 'dist/firepipes/bundles/firebase.sfx.js', { runtime: false, format: 'cjs', sourceMaps: true })
+});
+
+gulp.task('build.bundle.sfx.min', () => {
+  let builder = new Builder('dist', bundleConfig);
+
+  return builder.buildStatic('firepipes/firepipes', 'dist/firepipes/bundles/firebase.sfx.min.js', { runtime: false, format: 'cjs', sourceMaps: true, minify: true })
+});
+
+gulp.task('build.package', () =>
+  gulp.src(['package.json', 'README.md', 'LICENSE']).pipe(gulp.dest('dist/firepipes'))
+);
+
+gulp.task('build.release', done => sequence('clean', ['build.js'], [
+  'build.bundle',
+  'build.bundle.min',
+  'build.bundle.sfx',
+  'build.bundle.sfx.min',
+  'build.package',
+], done));
 
 // Watch
 
-gulp.task('watch.ts', () =>
-  gulp.watch(`${config.src}/**/*.ts`, ['build.ts'])
+gulp.task('watch.js', () =>
+  gulp.watch('{firepipes,test,typings}/**/*', ['build.js'])
 );
 
-gulp.task('watch.html', () =>
-  gulp.watch(`${config.src}/**/*.html`, ['build.html'])
+gulp.task('watch.release', () =>
+  gulp.watch('{firepipes,test,typings}/**/*', ['build.release'])
 );
-
-gulp.task('watch.bundle', () =>
-  gulp.watch(`${config.src}/**/*.ts`, ['build.bundle'])
-);
-
-gulp.task('watch', sequence('build', ['watch.ts', 'watch.html']));
 
 // Test
 
-import FirebaseServer from 'firebase-server'
+import { BROWSER_ALIASES } from './browser-providers'
 
-const runKarma = (configFile, done) => {
-  cprocess.exec(`node node_modules/.bin/karma run ${configFile}`, (errors, stdout) => done());
-}
+gulp.task('!test.unit/karma-server', done => {
+  let server = new karma.Server({ configFile: `${__dirname}/karma.conf.js` });
 
-gulp.task('!test.unit/firebase-server', (done) => {
-  new FirebaseServer(5000, 'test.firebaseio.com');
-  done();
-});
-
-gulp.task('!test.unit/karma-server', (done) => {
-  let server = new karma.Server({ configFile: `${__dirname}/karma.conf.js`, reporters: 'dots' });
-  var serverStarted = false;
-
-  server.on('run_complete', () => {
-    if (!serverStarted) {
-      serverStarted = true;
-      done();
-    }
+  server.once('run_complete', () => {
+    done();
   });
+
   server.start();
 });
 
-gulp.task('!test.unit/karma-run', (done) => runKarma('karma.conf.js', done));
+gulp.task('!test.unit/karma-run', done => {
+  cprocess.exec(`node_modules/.bin/karma run karma.conf.js`, () => done());
+});
 
-gulp.task('test.unit', () => {
-  sequence('build', '!test.unit/firebase-server', '!test.unit/karma-server', () => {
-    gulp.watch(`${config.src}/**/*`, { ignoreInitial: true }, () => sequence('build', '!test.unit/karma-run')());
+gulp.task('!test.unit/webdriver-update', done => {
+  cprocess.spawn(`node_modules/.bin/webdriver-manager`, ['update'], { stdio: 'inherit' }).on('close', (error) => {
+    done(); error ? process.exit(1) : 0;
   });
 });
 
+gulp.task('!test.unit/protractor-run', done => {
+  cprocess.spawn(`node_modules/.bin/protractor`, ['protractor.conf.js'], { stdio: 'inherit' }).on('close', (error) => {
+    done(); error ? process.exit(1) : 0;
+  });
+});
+
+gulp.task('!test.unit/firebase-server', () => {
+  new require('firebase-server')(5000, 'test.firebaseio.com');
+});
+
+gulp.task('test.unit', (done) => {
+  sequence('clean', 'build.js', '!test.unit/karma-server', () => {
+    gulp.watch(`{firepipes,test,typings}/**/*`, { ignoreInitial: true }, () => sequence('build.js', '!test.unit/karma-run')());
+  });
+});
+
+gulp.task('!test.unit/run', done => {
+  let server = new karma.Server({ configFile: `${__dirname}/karma.conf.js`, singleRun: true, browsers: BROWSER_ALIASES[argv.browsers || 'ALL'] }, error => {
+    done(); process.exit(error ? 1 : 0);
+  });
+
+  server.start();
+});
+
+gulp.task('test.e2e', done => {
+  sequence('!test.unit/webdriver-update', '!test.unit/protractor-run', done);
+});
+
+gulp.task('!test.e2e/run', done => {
+  sequence('serve.e2e', '!test.unit/webdriver-update', '!test.unit/protractor-run', () => {
+    done(); connect.serverClose();
+  });
+});
+
+gulp.task('!test/prepare', ['build.release']);
+
 // Serve
 
-gulp.task('serve', ['build.bundle', 'build.html', 'watch.bundle', 'watch.html'], () => {
-  connect.server({ port: '8001', root: '.' });
+gulp.task('serve.e2e', () => {
+  connect.server({ port: '8001', root: [__dirname] });
+});
+
+gulp.task('serve', (done) => {
+  sequence(['build.release', 'watch.release'], 'serve.e2e', done);
 });

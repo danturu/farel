@@ -8,7 +8,7 @@
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "preserveConstEnums": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "target": "es5"
   },
   "exclude": [

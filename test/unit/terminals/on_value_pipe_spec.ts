@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 
-import { OnValuePipe } from '../../../src/terminals/on_value_pipe'
+import { OnValuePipe } from '../../../firepipes/terminals/on_value_pipe'
 
 export function main(firebaseUrl: string) {
   describe("OnValuePipe", () => {

@@ -8,4 +8,6 @@ node_modules
 npm-debug.log
 !gulpfile.babel.js
 !karma.conf.js
+!protractor.conf.js
 !test-main.js
+!browser-providers.js

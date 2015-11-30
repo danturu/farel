@@ -4,9 +4,6 @@
   "version": "0.1.0",
   "homepage": "https://github.com/rosendi/firepipes",
   "license": "MIT",
-  "scripts": {
-    "test": "gulp test.unit"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rosendi/firepipes.git"
@@ -18,18 +15,24 @@
   "devDependencies": {
     "babel-core": "^5.8.23",
     "del": "^2.0.2",
+    "dotenv": "^1.2.0",
     "firebase-server": "^0.5.0",
     "gulp": "^3.9.0",
     "gulp-connect": "^2.2.0",
     "gulp-sequence": "^0.4.1",
+    "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.9.2",
     "karma": "^0.13.15",
+    "karma-chrome-launcher": "^0.2.0",
     "karma-jasmine": "^0.3.6",
+    "karma-sauce-launcher": "^0.3.0",
     "merge2": "^0.3.6",
+    "minimist": "^1.2.0",
     "protractor": "^2.5.0",
+    "selenium-webdriver": "^2.47.0",
     "systemjs": "^0.18.10",
     "systemjs-builder": "^0.14.11",
     "typescript": "^1.6.2"
   },
-  "typings": "./dist/src/firepipes.d.ts"
+  "typings": "./firepipes.d.ts"
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo</title>
+
+    <script src="/node_modules/systemjs/dist/system.js"></script>
+
+    <script>
+      System.config({
+        map: {
+          'angular2/angular2': '/node_modules/angular2/bundles/angular2.js',
+          'firebase': '/node_modules/firebase/lib/firebase-web.js',
+          'firepipes/firepipes': '/dist/firepipes/bundles/firepipes.js',
+          'todo': './',
+        },
+
+        meta: {
+          'angular2/angular2': {
+            format: 'register',
+          },
+
+          'firebase': {
+            format: 'cjs',
+          },
+
+          'firepipes/firepipes': {
+            format: 'register',
+          },
+        },
+
+        packages: {
+          'todo': {
+            defaultExtension: 'js'
+          }
+        }
+      });
+
+      System.import('todo/todo').catch(console.log.bind(console));
+    </script>
+  </head>
+
+  <body>
+    <app>Loading...</app>
+  </body>
+</html>
