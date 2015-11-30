@@ -8,7 +8,10 @@ export function unwrapToObjectWithMeta(snapshot: FirebaseDataSnapshot): any {
   let ref = snapshot.ref();
 
   if (typeof val === 'object' && !Array.isArray(val)) {
-    return Object.assign(val, { $key: key, $ref: ref });
+    val.$key = key;
+    val.$ref = ref;
+
+    return val;
   } else {
     return { $value: val, $key: key, $ref: ref };
   }
