@@ -19,7 +19,7 @@ export class ToObjectPipe implements TerminalPipeTransform {
     return unwrapToObjectWithMeta(this._onValuePipe.transform(firebaseRef));
   }
 
-  onDestroy() {
-    this._onValuePipe.onDestroy();
+  ngOnDestroy() {
+    this._onValuePipe.ngOnDestroy();
   }
 }

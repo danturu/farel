@@ -19,7 +19,7 @@ export class HasChildrenPipe implements TerminalPipeTransform {
     return snapshot && snapshot.hasChildren();
   }
 
-  onDestroy() {
-    this._onValuePipe.onDestroy();
+  ngOnDestroy() {
+    this._onValuePipe.ngOnDestroy();
   }
 }

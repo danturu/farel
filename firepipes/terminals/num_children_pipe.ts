@@ -24,7 +24,7 @@ export class NumChildrenPipe implements TerminalPipeTransform {
     }
   }
 
-  onDestroy() {
-    this._onValuePipe.onDestroy();
+  ngOnDestroy() {
+    this._onValuePipe.ngOnDestroy();
   }
 }

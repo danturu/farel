@@ -25,8 +25,8 @@ export class ToArrayPipe implements TerminalPipeTransform {
     }
   }
 
-  onDestroy() {
-    this._onValuePipe.onDestroy();
+  ngOnDestroy() {
+    this._onValuePipe.ngOnDestroy();
   }
 
   private _unwrapToArrayWithOrder(snapshot: FirebaseDataSnapshot) {

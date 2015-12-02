@@ -19,7 +19,7 @@ export class IsExistPipe implements TerminalPipeTransform {
     return snapshot && snapshot.exists();
   }
 
-  onDestroy() {
-    this._onValuePipe.onDestroy();
+  ngOnDestroy() {
+    this._onValuePipe.ngOnDestroy();
   }
 }

@@ -9,7 +9,7 @@
     "url": "git+https://github.com/rosendi/firepipes.git"
   },
   "dependencies": {
-    "angular2": "^2.0.0-alpha.46",
+    "angular2": "^2.0.0-alpha.47",
     "firebase": "^2.3.2"
   },
   "devDependencies": {

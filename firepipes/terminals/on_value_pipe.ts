@@ -22,7 +22,7 @@ export class OnValuePipe implements TerminalPipeTransform {
     return this._latestSnapshot;
   }
 
-  onDestroy() {
+  ngOnDestroy() {
     this._dispose();
   }
 
