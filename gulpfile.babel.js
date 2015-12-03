@@ -77,13 +77,13 @@ gulp.task('build.bundle.min', done => {
 gulp.task('build.bundle.sfx', () => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.buildStatic('firepipe/firepipe', 'dist/firepipe/bundles/firebase.sfx.js', { runtime: false, format: 'cjs', sourceMaps: true })
+  return builder.buildStatic('firepipe/firepipe', 'dist/firepipe/bundles/firepipe.sfx.js', { runtime: false, format: 'cjs', sourceMaps: true })
 });
 
 gulp.task('build.bundle.sfx.min', () => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.buildStatic('firepipe/firepipe', 'dist/firepipe/bundles/firebase.sfx.min.js', { runtime: false, format: 'cjs', sourceMaps: true, minify: true })
+  return builder.buildStatic('firepipe/firepipe', 'dist/firepipe/bundles/firepipe.sfx.min.js', { runtime: false, format: 'cjs', sourceMaps: true, minify: true })
 });
 
 gulp.task('build.package', () =>

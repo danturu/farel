@@ -1,7 +1,7 @@
 {
   "name": "firepipe",
   "description": "Firebase pipes for Angular 2",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/rosendi/firepipe",
   "license": "MIT",
   "repository": {
