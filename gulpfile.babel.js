@@ -28,7 +28,7 @@ let tsProject = ts.createProject('tsconfig.json', {
 
 let bundleConfig = {
   paths: {
-    'firepipe/*': 'firepipe/*.js',
+    'farel/*': 'farel/*.js',
   },
 
   meta: {
@@ -43,7 +43,7 @@ let bundleConfig = {
 };
 
 gulp.task('build.src.js', () => {
-  let result = gulp.src(['{firepipe,typings}/**/*.ts']).pipe(sourcemaps.init()).pipe(ts(tsProject));
+  let result = gulp.src(['{farel,typings}/**/*.ts']).pipe(sourcemaps.init()).pipe(ts(tsProject));
 
   return merge([
     result.js.pipe(sourcemaps.write()).pipe(gulp.dest('dist')), result.dts.pipe(gulp.dest('dist')),
@@ -65,29 +65,29 @@ gulp.task('build.js', done =>
 gulp.task('build.bundle', () => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.bundle('firepipe/firepipe', 'dist/firepipe/bundles/firepipe.js', { sourceMaps: true });
+  return builder.bundle('farel/farel', 'dist/farel/bundles/farel.js', { sourceMaps: true });
 });
 
 gulp.task('build.bundle.min', done => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.bundle('firepipe/firepipe', 'dist/firepipe/bundles/firepipe.min.js', { sourceMaps: true, minify: true });
+  return builder.bundle('farel/farel', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
 });
 
 gulp.task('build.bundle.sfx', () => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.buildStatic('firepipe/firepipe', 'dist/firepipe/bundles/firepipe.sfx.js', { runtime: false, format: 'cjs', sourceMaps: true })
+  return builder.buildStatic('farel/farel', 'dist/farel/bundles/farel.sfx.js', { runtime: false, format: 'cjs', sourceMaps: true })
 });
 
 gulp.task('build.bundle.sfx.min', () => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.buildStatic('firepipe/firepipe', 'dist/firepipe/bundles/firepipe.sfx.min.js', { runtime: false, format: 'cjs', sourceMaps: true, minify: true })
+  return builder.buildStatic('farel/farel', 'dist/farel/bundles/farel.sfx.min.js', { runtime: false, format: 'cjs', sourceMaps: true, minify: true })
 });
 
 gulp.task('build.package', () =>
-  gulp.src(['package.json', 'README.md', 'LICENSE']).pipe(gulp.dest('dist/firepipe'))
+  gulp.src(['package.json', 'README.md', 'LICENSE']).pipe(gulp.dest('dist/farel'))
 );
 
 gulp.task('build.release', done => sequence('clean', ['build.js'], [
@@ -101,11 +101,11 @@ gulp.task('build.release', done => sequence('clean', ['build.js'], [
 // Watch
 
 gulp.task('watch.js', () =>
-  gulp.watch('{firepipe,test,typings}/**/*', ['build.js'])
+  gulp.watch('{farel,test,typings}/**/*', ['build.js'])
 );
 
 gulp.task('watch.release', () =>
-  gulp.watch('{firepipe,test,typings}/**/*', ['build.release'])
+  gulp.watch('{farel,test,typings}/**/*', ['build.release'])
 );
 
 // Test
@@ -144,7 +144,7 @@ gulp.task('!test.unit/firebase-server', () => {
 
 gulp.task('test.unit', (done) => {
   sequence('clean', 'build.js', '!test.unit/karma-server', () => {
-    gulp.watch(`{firepipe,test,typings}/**/*`, { ignoreInitial: true }, () => sequence('build.js', '!test.unit/karma-run')());
+    gulp.watch(`{farel,test,typings}/**/*`, { ignoreInitial: true }, () => sequence('build.js', '!test.unit/karma-run')());
   });
 });
 

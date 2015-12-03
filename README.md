@@ -1,14 +1,14 @@
-[![Travis](https://img.shields.io/travis/rosendi/firepipe/master.svg)](https://travis-ci.org/rosendi/firepipe)
-[![GitHub release](https://img.shields.io/github/release/rosendi/firepipe.svg)](https://github.com/rosendi/firepipe/releases)
+[![Travis](https://img.shields.io/travis/rosendi/farel/master.svg)](https://travis-ci.org/rosendi/farel)
+[![GitHub release](https://img.shields.io/github/release/rosendi/farel.svg)](https://github.com/rosendi/farel/releases)
 
-# Firepipe
+# Farel
 
-Firepipe is a collection of the [Angular 2](http://angular.io) pipes for [Firebase](http://firebase.com).
+Farel is a collection of the [Angular 2](http://angular.io) pipes for [Firebase](http://firebase.com).
 
 ## Installation
 
 ```bash
-$ npm install firepipe --save-dev
+$ npm install farel --save-dev
 ```
 
 ## Basic Example
@@ -16,7 +16,7 @@ $ npm install firepipe --save-dev
 [Live Demo](http://plnkr.co/edit/stDf4Ymr0SX5KGVbdh65)
 
 ```typescript
-import { FIREBASE_PIPES } from 'firepipe/firepipe'
+import { FIREBASE_PIPES } from 'farel/farel'
 
 ...
 

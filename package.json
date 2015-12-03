@@ -1,12 +1,12 @@
 {
-  "name": "firepipe",
+  "name": "farel",
   "description": "Firebase pipes for Angular 2",
-  "version": "0.1.1",
-  "homepage": "https://github.com/rosendi/firepipe",
+  "version": "0.1.2",
+  "homepage": "https://github.com/rosendi/farel",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rosendi/firepipe.git"
+    "url": "git+https://github.com/rosendi/farel.git"
   },
   "dependencies": {
     "angular2": "^2.0.0-alpha.47",
@@ -34,5 +34,5 @@
     "systemjs-builder": "^0.14.11",
     "typescript": "^1.7.3"
   },
-  "typings": "./firepipe.d.ts"
+  "typings": "./farel.d.ts"
 }

@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 
-import { unwrapToObjectWithMeta } from '../../../firepipe/utils/unwrap_to_object_with_meta'
+import { unwrapToObjectWithMeta } from '../../../farel/utils/unwrap_to_object_with_meta'
 
 export function main(FIREBASE_URL: string) {
   describe('unwrapToObjectWithMeta', () => {

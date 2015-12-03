@@ -1,4 +1,4 @@
-import { AssignLocal } from '../../firepipe/assign_local'
+import { AssignLocal } from '../../farel/assign_local'
 
 export function main(FIREBASE_URL: string) {
   describe("AssignLocal", () => {

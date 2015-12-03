@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 
-import { HasChildrenPipe } from '../../../firepipe/terminals/has_children_pipe'
+import { HasChildrenPipe } from '../../../farel/terminals/has_children_pipe'
 
 export function main(firebaseUrl: string) {
   describe("HasChildrenPipe", () => {

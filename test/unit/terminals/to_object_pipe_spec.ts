@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 
-import { ToObjectPipe } from '../../../firepipe/terminals/to_object_pipe'
+import { ToObjectPipe } from '../../../farel/terminals/to_object_pipe'
 
 export function main(firebaseUrl: string) {
   describe("ToObjectPipe", () => {

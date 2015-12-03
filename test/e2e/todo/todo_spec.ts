@@ -11,7 +11,7 @@ describe('Todo App', () => {
     flow.execute(waitOne);
   }
 
-  var todoRef = new Firebase('https://firepipe.firebaseio.com/todo');
+  var todoRef = new Firebase('https://farel.firebaseio.com/todo');
 
   beforeEach((done) => {
     browser.get('/dist/test/e2e/todo').then(done);

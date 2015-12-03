@@ -28,6 +28,6 @@ if (process.env.TRAVIS) {
   let build = `TRAVIS #${process.env.TRAVIS_BUILD_NUMBER} (${process.env.TRAVIS_BUILD_ID})`;
 
   config.multiCapabilities.forEach(caps => {
-    Object.assign(caps, { 'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER, name: 'Firepipe Protractor Tests', build: build });
+    Object.assign(caps, { 'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER, name: 'Farel Protractor Tests', build: build });
   });
 }

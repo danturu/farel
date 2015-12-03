@@ -35,7 +35,7 @@ export default function(config) {
     concurrency: 3,
 
     sauceLabs: {
-      testName: 'Firepipe Unit Tests',
+      testName: 'Farel Unit Tests',
       startConnect: false,
     },
   });

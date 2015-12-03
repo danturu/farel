@@ -1,7 +1,7 @@
 import * as Firebase from 'firebase'
 
-import { InvalidFirebaseQueryException } from '../../../firepipe/invalid_firebase_query_exception'
-import { toFirebaseQuery, isFirebaseQuery, isFirebaseQueryEqual } from '../../../firepipe/utils/to_firebase_query'
+import { InvalidFirebaseQueryException } from '../../../farel/invalid_firebase_query_exception'
+import { toFirebaseQuery, isFirebaseQuery, isFirebaseQueryEqual } from '../../../farel/utils/to_firebase_query'
 
 export function main(FIREBASE_URL: string) {
   describe('toFirebaseQuery', () => {

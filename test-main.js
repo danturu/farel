@@ -21,7 +21,7 @@ System.config({
   },
 
   packages: {
-    'firepipe': {
+    'farel': {
       defaultExtension: 'js'
     },
 
