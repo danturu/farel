@@ -1,5 +1,4 @@
 [![Travis](https://img.shields.io/travis/rosendi/farel/master.svg)](https://travis-ci.org/rosendi/farel)
-[![GitHub release](https://img.shields.io/github/release/rosendi/farel.svg)](https://github.com/rosendi/farel/releases)
 
 # Farel
 
@@ -46,8 +45,6 @@ class Weather {
 ```
 
 ## Documentation
-
-Upcoming...
 
 #### Value Pipes:
 
