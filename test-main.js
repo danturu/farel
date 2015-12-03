@@ -21,7 +21,7 @@ System.config({
   },
 
   packages: {
-    'firepipes': {
+    'firepipe': {
       defaultExtension: 'js'
     },
 

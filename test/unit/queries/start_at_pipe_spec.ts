@@ -1,6 +1,6 @@
 import * as Firebase from 'firebase'
 
-import { StartAtPipe } from '../../../firepipes/queries/start_at_pipe'
+import { StartAtPipe } from '../../../firepipe/queries/start_at_pipe'
 
 export function main(firebaseUrl: string) {
   describe("StartAtPipe", () => {

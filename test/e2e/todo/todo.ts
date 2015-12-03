@@ -1,5 +1,5 @@
 import { View, Component, bootstrap } from 'angular2/angular2'
-import { FIREBASE_PIPES } from 'firepipes/firepipes'
+import { FIREBASE_PIPES } from 'firepipe/firepipe'
 
 import * as Firebase from 'firebase'
 

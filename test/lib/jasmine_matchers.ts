@@ -1,4 +1,4 @@
-import { isFirebaseQuery } from '../../firepipes/utils/to_firebase_query'
+import { isFirebaseQuery } from '../../firepipe/utils/to_firebase_query'
 
 export function main() {
   const MATCHERS: jasmine.CustomMatcherFactories = {}

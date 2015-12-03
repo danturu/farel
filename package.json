@@ -1,12 +1,12 @@
 {
-  "name": "firepipes",
+  "name": "firepipe",
   "description": "Firebase pipes for Angular 2",
   "version": "0.1.0",
-  "homepage": "https://github.com/rosendi/firepipes",
+  "homepage": "https://github.com/rosendi/firepipe",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rosendi/firepipes.git"
+    "url": "git+https://github.com/rosendi/firepipe.git"
   },
   "dependencies": {
     "angular2": "^2.0.0-alpha.47",
@@ -34,5 +34,5 @@
     "systemjs-builder": "^0.14.11",
     "typescript": "^1.7.3"
   },
-  "typings": "./firepipes.d.ts"
+  "typings": "./firepipe.d.ts"
 }
