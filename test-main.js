@@ -46,7 +46,6 @@ Promise.all(Object.keys(__karma__.files).filter(isSpecFile).map(importSpecModule
 function isSpecFile(path) {
   var files = [
     'jasmine_matchers.js',
-    'dinosaur_facts.js',
     '_spec.js',
   ];
 
