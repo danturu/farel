@@ -1,7 +1,7 @@
 import { Directive, ViewRef, ViewContainerRef, TemplateRef } from 'angular2/angular2'
 
 @Directive({
-  selector: '[assign-local]',
+  selector: '[assignLocal]',
 
   inputs: [
     'local: assignLocalTo'
