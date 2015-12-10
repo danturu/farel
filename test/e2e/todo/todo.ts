@@ -13,18 +13,37 @@ import * as Firebase from 'firebase'
   ],
 
   template: `
-    <todo-key>{{ todoRef.toString() }}</todo-key>
+    <todo-key>{{ todosRef.toString() }}</todo-key>
 
     <main>
       <h1>Todos:</h1>
+
+      <ul class="todo">
+        <li *ngFor="#todo of todosRef | toArray">
+          <button (click)="removeTodo(todo.$ref)">Remove</button> {{ todo.name }}
+        </li>
+      </ul>
+
+      <input #name type="text" (keyup)="addTodo($event, name.value)">
     </main>
   `
 })
 
 export class Todo {
-  todoRef: String = '';
+  todosRef: Firebase;
 
   constructor() {
+    this.todosRef = new Firebase('https://farel.firebaseio.com/todo');
+  }
+
+  addTodo(event: any, name: string) {
+    if (event.which === 13) {
+      this.todosRef.push({ name: name });
+    }
+  }
+
+  removeTodo(todoRef: Firebase) {
+    todoRef.remove();
   }
 }
 
