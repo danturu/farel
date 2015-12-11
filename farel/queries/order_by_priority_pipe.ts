@@ -8,11 +8,11 @@ import { toFirebaseQuery } from '../utils/to_firebase_query'
 })
 
 export class OrderByPriorityPipe implements QueryPipeTransform {
-  transform(firebaseRef: string | FirebaseQuery, args: string[] = []): FirebaseQuery {
-    if (!firebaseRef) {
+  transform(firebaseQuery: string | FirebaseQuery, args: string[] = []): FirebaseQuery {
+    if (!firebaseQuery) {
       return null;
     }
 
-    return toFirebaseQuery(firebaseRef).orderByPriority();
+    return toFirebaseQuery(firebaseQuery).orderByPriority();
   }
 }

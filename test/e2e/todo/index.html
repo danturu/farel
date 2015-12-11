@@ -3,38 +3,46 @@
   <head>
     <title>Todo</title>
 
+    <base href="">
+
     <script src="/node_modules/systemjs/dist/system.js"></script>
 
     <script>
       System.config({
+        paths: {
+          'rxjs/*': '/node_modules/rxjs/*.js',
+        },
+
         map: {
-          'angular2/angular2': '/node_modules/angular2/bundles/angular2.js',
           'firebase': '/node_modules/firebase/lib/firebase-web.js',
-          'farel/farel': '/dist/farel/bundles/farel.js',
           'todo': './',
         },
 
         meta: {
-          'angular2/angular2': {
-            format: 'register',
+          'rxjs/*': {
+            format: 'cjs',
           },
 
           'firebase': {
             format: 'cjs',
-          },
-
-          'farel/farel': {
-            format: 'register',
           },
         },
 
         packages: {
           'todo': {
             defaultExtension: 'js'
-          }
-        }
-      });
+          },
+        },
 
+        defaultJSExtensions: true,
+      });
+    </script>
+
+    <script src="/node_modules/angular2/bundles/angular2.js"></script>
+    <script src="/node_modules/angular2/bundles/router.js"></script>
+    <script src="/dist/farel/bundles/farel.js"></script>
+
+    <script>
       System.import('todo/todo').catch(console.log.bind(console));
     </script>
   </head>

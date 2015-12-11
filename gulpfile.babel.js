@@ -32,7 +32,11 @@ let bundleConfig = {
   },
 
   meta: {
-    'angular2/angular2': {
+    'angular2/*': {
+      build: false,
+    },
+
+    'rxjs/*': {
       build: false,
     },
 

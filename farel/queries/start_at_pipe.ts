@@ -9,8 +9,8 @@ import { toFirebaseQuery } from '../utils/to_firebase_query'
 })
 
 export class StartAtPipe implements QueryPipeTransform {
-  transform(firebaseRef: string | FirebaseQuery, args: any[]): FirebaseQuery {
-    if (!firebaseRef) {
+  transform(firebaseQuery: string | FirebaseQuery, args: any[]): FirebaseQuery {
+    if (!firebaseQuery) {
       return null;
     }
 
@@ -18,6 +18,6 @@ export class StartAtPipe implements QueryPipeTransform {
       throw new InvalidPipeArgumentException('StartAt pipe requires the value to start at argument');
     }
 
-    return toFirebaseQuery(firebaseRef).startAt(args[0], args[1]);
+    return toFirebaseQuery(firebaseQuery).startAt(args[0], args[1]);
   }
 }

@@ -1,7 +1,7 @@
 import * as Firebase from 'firebase'
 
 import { InvalidFirebaseQueryException } from '../../../farel/invalid_firebase_query_exception'
-import { toFirebaseQuery, isFirebaseQuery, isFirebaseQueryEqual } from '../../../farel/utils/to_firebase_query'
+import { toFirebaseQuery } from '../../../farel/utils/to_firebase_query'
 
 export function main(FIREBASE_URL: string) {
   describe('toFirebaseQuery', () => {
@@ -54,41 +54,6 @@ export function main(FIREBASE_URL: string) {
 
       expect(transform).toThrowError(InvalidFirebaseQueryException);
       expect(transform).toThrowError(/FirebasePipe/);
-    });
-  });
-
-  describe('isFirebaseQuery', () => {
-    it ('should pass when given a firebase instance', () => {
-      expect(isFirebaseQuery(new Firebase(FIREBASE_URL))).toBe(true);
-    });
-
-    it ('should pass when given a firebase query instance', () => {
-      expect(isFirebaseQuery(new Firebase(FIREBASE_URL).orderByValue())).toBe(true);
-    });
-
-    it ('should not pass otherwise', () => {
-      expect(isFirebaseQuery(<any>{ ref: () => false })).toBe(false);
-    });
-  });
-
-  describe('isFirebaseQueryEqual', () => {
-    it ('should pass when the urls are equal', () => {
-      expect(isFirebaseQueryEqual(FIREBASE_URL, FIREBASE_URL)).toBe(true);
-      expect(isFirebaseQueryEqual(new Firebase(FIREBASE_URL), FIREBASE_URL)).toBe(true);
-      expect(isFirebaseQueryEqual(new Firebase(FIREBASE_URL), new Firebase(FIREBASE_URL))).toBe(true);
-    });
-
-    it ('should treat nulls as equal', () => {
-      expect(isFirebaseQueryEqual(null, null)).toBe(true);
-    });
-
-    it ('should not pass when one of the hands is null', () => {
-      expect(isFirebaseQueryEqual(null, FIREBASE_URL)).toBe(false);
-      expect(isFirebaseQueryEqual(FIREBASE_URL, null)).toBe(false);
-    });
-
-    it ('should not pass when urls are different', () => {
-      expect(isFirebaseQueryEqual(FIREBASE_URL, `${FIREBASE_URL}/child`)).toBe(false);
     });
   });
 }

@@ -9,8 +9,8 @@ import { toFirebaseQuery } from '../utils/to_firebase_query'
 })
 
 export class LimitToLastPipe implements QueryPipeTransform {
-  transform(firebaseRef: string | FirebaseQuery, args: number[]): FirebaseQuery {
-    if (!firebaseRef) {
+  transform(firebaseQuery: string | FirebaseQuery, args: number[]): FirebaseQuery {
+    if (!firebaseQuery) {
       return null;
     }
 
@@ -18,6 +18,6 @@ export class LimitToLastPipe implements QueryPipeTransform {
       throw new InvalidPipeArgumentException('LimitToLast pipe requires the limit argument');
     }
 
-    return toFirebaseQuery(firebaseRef).limitToFirst(args[0]);
+    return toFirebaseQuery(firebaseQuery).limitToFirst(args[0]);
   }
 }

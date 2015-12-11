@@ -1,10 +1,11 @@
 import { View, Component, bootstrap } from 'angular2/angular2'
+import { ROUTER_PROVIDERS, ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig } from 'angular2/router'
 import { FIREBASE_PIPES } from 'farel/farel'
 
 import * as Firebase from 'firebase'
 
 @Component({
-  selector: 'app'
+  selector: 'show'
 })
 
 @View({
@@ -13,18 +14,51 @@ import * as Firebase from 'firebase'
   ],
 
   template: `
+    hello
+  `,
+})
+
+class Show {
+}
+
+@RouteConfig([
+  {
+    path: '/:id',
+    component: Show,
+    name: 'Show',
+  },
+])
+
+@Component({
+  selector: 'app'
+})
+
+@View({
+  directives: [
+    ROUTER_DIRECTIVES,
+  ],
+
+  pipes: [
+    FIREBASE_PIPES,
+  ],
+
+  template: `
     <todo-key>{{ todosRef.toString() }}</todo-key>
 
-    <main>
-      <h1>Todos:</h1>
-
+    <aside>
       <ul class="todo">
         <li *ngFor="#todo of todosRef | toArray">
-          <button (click)="removeTodo(todo.$ref)">Remove</button> {{ todo.name }}
+          <button (click)="removeTodo(todo.$ref)">Remove</button>
+
+          <a [routerLink]="['Show', { id: todo.$key }]">{{ todo.name }}</a>
         </li>
       </ul>
 
       <input #name type="text" (keyup)="addTodo($event, name.value)">
+    </aside>
+
+    <main>
+      <router-outlet></router-outlet>
     </main>
   `
 })
@@ -47,4 +81,4 @@ export class Todo {
   }
 }
 
-bootstrap(Todo);
+bootstrap(Todo, [ROUTER_PROVIDERS]);

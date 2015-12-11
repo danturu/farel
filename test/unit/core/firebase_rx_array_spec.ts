@@ -1,9 +1,9 @@
 import * as Firebase from 'firebase'
 
-import { OnValuePipe } from '../../../farel/terminals/on_value_pipe'
+import { FirebaseRxArray } from '../../../farel/core/firebase_rx_array'
 
 export function main(firebaseUrl: string) {
-  describe("OnValuePipe", () => {
+  describe("FirebaseRxArray", () => {
     it("should be tested", () => {
       pending();
     });

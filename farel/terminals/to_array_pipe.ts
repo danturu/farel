@@ -1,41 +1,39 @@
-import { ChangeDetectorRef, Pipe } from 'angular2/angular2'
+import { ChangeDetectorRef, AsyncPipe, Pipe } from 'angular2/angular2';
 
-import { TerminalPipeTransform } from './terminal_pipe_transform'
-import { OnValuePipe } from './on_value_pipe'
-import { unwrapToObjectWithMeta } from '../utils/unwrap_to_object_with_meta'
+import { FirebaseRxArray } from '../core/firebase_rx_array';
+import { FirebaseAsync } from '../core/firebase_async'
+import { TerminalPipeTransform } from './terminal_pipe_transform';
+import { isFirebaseRefsEqual } from '../utils/is_firebase_refs_equal';
+import { toFirebaseQuery } from '../utils/to_firebase_query';
 
 @Pipe({
   name: 'toArray', pure: false
 })
 
 export class ToArrayPipe implements TerminalPipeTransform {
-  private _onValuePipe: OnValuePipe;
+  private _firebaseAsync: FirebaseAsync;
+  private _firebaseQuery: FirebaseQuery;
+  private _asyncPipe: AsyncPipe;
 
   constructor(changeDetectorRef: ChangeDetectorRef) {
-    this._onValuePipe = new OnValuePipe(changeDetectorRef, 'ToArrayPipe');
+    this._asyncPipe = new AsyncPipe(changeDetectorRef);
   }
 
-  transform(firebaseRef: string | FirebaseQuery, args: any[] = []): any {
-    let snapshot = this._onValuePipe.transform(firebaseRef);
+  transform(firebaseQuery: string | FirebaseQuery, args: any[] = []): any {
+    if (!isFirebaseRefsEqual(this._firebaseQuery, firebaseQuery)) {
+      this._firebaseQuery = toFirebaseQuery(firebaseQuery);
 
-    if (snapshot) {
-      return this._unwrapToArrayWithOrder(snapshot);
-    } else {
-      return null;
+      if (firebaseQuery) {
+        this._firebaseAsync = new FirebaseRxArray(firebaseQuery).collectionEvents;
+      } else {
+        this._firebaseAsync = Promise.resolve(0);
+      }
     }
+
+    return this._asyncPipe.transform(this._firebaseAsync);
   }
 
   ngOnDestroy() {
-    this._onValuePipe.ngOnDestroy();
-  }
-
-  private _unwrapToArrayWithOrder(snapshot: FirebaseDataSnapshot) {
-    var result: any[] = [];
-
-    snapshot.forEach(child => {
-      result.push(unwrapToObjectWithMeta(child));
-    });
-
-    return result;
+    this._asyncPipe.ngOnDestroy();
   }
 }

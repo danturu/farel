@@ -9,8 +9,8 @@ import { toFirebaseQuery } from '../utils/to_firebase_query'
 })
 
 export class EqualToPipe implements QueryPipeTransform {
-  transform(firebaseRef: string | FirebaseQuery, args: any[]): FirebaseQuery {
-    if (!firebaseRef) {
+  transform(firebaseQuery: string | FirebaseQuery, args: any[]): FirebaseQuery {
+    if (!firebaseQuery) {
       return null;
     }
 
@@ -18,6 +18,6 @@ export class EqualToPipe implements QueryPipeTransform {
       throw new InvalidPipeArgumentException('EndAt pipe requires the value to match for argument');
     }
 
-    return toFirebaseQuery(firebaseRef).endAt(args[0], args[1]);
+    return toFirebaseQuery(firebaseQuery).endAt(args[0], args[1]);
   }
 }

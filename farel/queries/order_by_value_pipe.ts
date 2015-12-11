@@ -8,11 +8,11 @@ import { toFirebaseQuery } from '../utils/to_firebase_query'
 })
 
 export class OrderByValuePipe implements QueryPipeTransform {
-  transform(firebaseRef: string | FirebaseQuery, args: string[] = []): FirebaseQuery {
-    if (!firebaseRef) {
+  transform(firebaseQuery: string | FirebaseQuery, args: string[] = []): FirebaseQuery {
+    if (!firebaseQuery) {
       return null;
     }
 
-    return toFirebaseQuery(firebaseRef).orderByValue();
+    return toFirebaseQuery(firebaseQuery).orderByValue();
   }
 }

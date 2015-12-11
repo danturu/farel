@@ -9,8 +9,8 @@ import { toFirebaseQuery } from '../utils/to_firebase_query'
 })
 
 export class OrderByChildPipe implements QueryPipeTransform {
-  transform(firebaseRef: string | FirebaseQuery, args: string[]): FirebaseQuery {
-    if (!firebaseRef) {
+  transform(firebaseQuery: string | FirebaseQuery, args: string[]): FirebaseQuery {
+    if (!firebaseQuery) {
       return null;
     }
 
@@ -18,6 +18,6 @@ export class OrderByChildPipe implements QueryPipeTransform {
       throw new InvalidPipeArgumentException('OrderByChild pipe requires child the key argument');
     }
 
-    return toFirebaseQuery(firebaseRef).orderByChild(args[0]);
+    return toFirebaseQuery(firebaseQuery).orderByChild(args[0]);
   }
 }

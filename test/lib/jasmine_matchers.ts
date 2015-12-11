@@ -1,4 +1,4 @@
-import { isFirebaseQuery } from '../../farel/utils/to_firebase_query'
+import { isFirebaseQuery } from '../../farel/utils/is_firebase_query'
 
 export function main() {
   const MATCHERS: jasmine.CustomMatcherFactories = {}

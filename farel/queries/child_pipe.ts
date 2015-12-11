@@ -9,8 +9,8 @@ import { toFirebaseQuery } from '../utils/to_firebase_query'
 })
 
 export class ChildPipe implements QueryPipeTransform {
-  transform(firebaseRef: string | FirebaseQuery, args: string[]): FirebaseQuery {
-    if (!firebaseRef) {
+  transform(firebaseQuery: string | FirebaseQuery, args: string[]): FirebaseQuery {
+    if (!firebaseQuery) {
       return null;
     }
 
@@ -18,6 +18,6 @@ export class ChildPipe implements QueryPipeTransform {
       throw new InvalidPipeArgumentException('Child pipe requires the key argument');
     }
 
-    return toFirebaseQuery(firebaseRef).ref().child(args[0]);
+    return toFirebaseQuery(firebaseQuery).ref().child(args[0]);
   }
 }
