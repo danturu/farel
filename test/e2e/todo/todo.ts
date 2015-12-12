@@ -1,6 +1,7 @@
-import { View, Component, bootstrap } from 'angular2/angular2'
-import { ROUTER_PROVIDERS, ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig } from 'angular2/router'
-import { FIREBASE_PIPES } from 'farel/farel'
+import { View, Component, provide } from 'angular2/core'
+import { bootstrap } from 'angular2/platform/browser';
+import { ROUTER_PROVIDERS, ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig, LocationStrategy, HashLocationStrategy } from 'angular2/router'
+import { FIREBASE_PIPES, FAREL_DIRECTIVES } from 'farel/pipes'
 
 import * as Firebase from 'firebase'
 
@@ -9,21 +10,30 @@ import * as Firebase from 'firebase'
 })
 
 @View({
+  directives: [
+    FAREL_DIRECTIVES,
+  ],
+
   pipes: [
     FIREBASE_PIPES,
   ],
 
   template: `
-    hello
+    <div [query]="todoRef | toObject" #todo="query">{{ todo.name }}</div>
   `,
 })
 
 class Show {
+  todoRef: Firebase;
+
+  constructor(params: RouteParams) {
+    this.todoRef = new Firebase('https://farel.firebaseio.com/todo').child(params.get('id'));
+  }
 }
 
 @RouteConfig([
   {
-    path: '/:id',
+    path: './:id',
     component: Show,
     name: 'Show',
   },
@@ -81,4 +91,4 @@ export class Todo {
   }
 }
 
-bootstrap(Todo, [ROUTER_PROVIDERS]);
+bootstrap(Todo, [ROUTER_PROVIDERS, provide(LocationStrategy, { useClass: HashLocationStrategy })]);

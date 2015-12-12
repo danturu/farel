@@ -1,3 +1,5 @@
+import { Query } from './directives/query'
+
 import { HasChildrenPipe } from './terminals/has_children_pipe'
 import { IsExistPipe } from './terminals/is_exist_pipe'
 import { NumChildrenPipe } from './terminals/num_children_pipe'
@@ -15,7 +17,7 @@ import { OrderByPriorityPipe } from './queries/order_by_priority_pipe'
 import { OrderByValuePipe } from './queries/order_by_value_pipe'
 import { StartAtPipe } from './queries/start_at_pipe'
 
-export { AssignLocal } from './assign_local'
+export { Query } from './directives/query'
 
 export { HasChildrenPipe } from './terminals/has_children_pipe'
 export { IsExistPipe } from './terminals/is_exist_pipe'
@@ -51,4 +53,8 @@ export const FIREBASE_PIPES = [
   OrderByPriorityPipe,
   OrderByValuePipe,
   StartAtPipe,
+]
+
+export const FAREL_DIRECTIVES = [
+  Query,
 ]
