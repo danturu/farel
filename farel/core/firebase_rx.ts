@@ -43,6 +43,8 @@ export class FirebaseRx {
       events.forEach(eventType => {
         callbacks[eventType] = this._firebaseQuery.on(FIREBASE_EVENT_NAME[eventType], (snapshot, prevChild) => {
           observer.next({ eventType: eventType, snapshot: snapshot, prevChild: prevChild });
+        }, error => {
+          observer.error(error);
         });
       });
 
