@@ -1,4 +1,6 @@
-export const CUSTOM_LAUNCHERS = {
+'use strict';
+
+let CUSTOM_LAUNCHERS = module.exports.CUSTOM_LAUNCHERS = {
   'SL_CHROME': {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -110,7 +112,7 @@ export const CUSTOM_LAUNCHERS = {
   }
 }
 
-export const BROWSER_ALIASES = {
+let BROWSER_ALIASES = module.exports.BROWSER_ALIASES = {
   'ALL': Object.keys(CUSTOM_LAUNCHERS),
 
   'DESKTOP': [

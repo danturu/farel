@@ -1,7 +1,7 @@
 import { View, Component, provide } from 'angular2/core'
 import { bootstrap } from 'angular2/platform/browser';
 import { ROUTER_PROVIDERS, ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig, LocationStrategy, HashLocationStrategy } from 'angular2/router'
-import { FIREBASE_PIPES, FAREL_DIRECTIVES } from 'farel/pipes'
+import { FAREL_PIPES, FAREL_DIRECTIVES } from 'farel/pipes'
 
 import * as Firebase from 'firebase'
 
@@ -15,7 +15,7 @@ import * as Firebase from 'firebase'
   ],
 
   pipes: [
-    FIREBASE_PIPES,
+    FAREL_PIPES,
   ],
 
   template: `
@@ -49,7 +49,7 @@ class Show {
   ],
 
   pipes: [
-    FIREBASE_PIPES,
+    FAREL_PIPES,
   ],
 
   template: `

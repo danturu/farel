@@ -1,6 +1,5 @@
 import * as Firebase from 'firebase'
 
-import { InvalidFirebaseQueryException } from '../../../farel/invalid_firebase_query_exception'
 import { isFirebaseRefsEqual } from '../../../farel/utils/is_firebase_refs_equal'
 
 export function main(FIREBASE_URL: string) {
