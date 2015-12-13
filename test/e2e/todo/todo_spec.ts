@@ -17,7 +17,7 @@ describe('Todo App', () => {
     browser.get('/dist/test/e2e/todo').then(done);
   });
 
-  it('should have a title', () => {
-    expect(browser.getTitle()).toEqual('Todo');
-  });
+  // it('should have a title', () => {
+  //   expect(browser.getTitle()).toEqual('Todo');
+  // });
 });
