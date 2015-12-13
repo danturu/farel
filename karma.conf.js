@@ -1,6 +1,8 @@
-import { CUSTOM_LAUNCHERS } from './browser-providers'
+'use strict';
 
-export default function(config) {
+let CUSTOM_LAUNCHERS = require('./browser-providers').CUSTOM_LAUNCHERS;
+
+module.exports = function(config) {
   config.set({
     files: [
       'node_modules/systemjs/dist/system.js',
