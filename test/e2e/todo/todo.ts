@@ -1,8 +1,8 @@
 import { View, Component, provide } from 'angular2/core'
 import { bootstrap } from 'angular2/platform/browser';
 import { ROUTER_PROVIDERS, ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig, LocationStrategy, HashLocationStrategy } from 'angular2/router'
-import { FAREL_PIPES, FAREL_DIRECTIVES } from 'farel/pipes'
-
+import { FAREL_PIPES } from 'farel/pipes'
+import { FAREL_DIRECTIVES } from 'farel/directives'
 import * as Firebase from 'firebase'
 
 @Component({
@@ -19,7 +19,11 @@ import * as Firebase from 'firebase'
   ],
 
   template: `
-    <div [query]="todoRef | toObject" #todo="query">{{ todo.name }}</div>
+    <div [query]="todoRef | toObject" #todo="query">
+      <div *ngIf="todo.$key">
+        {{ todo.name }}
+      </div>
+    </div>
   `,
 })
 
@@ -59,8 +63,7 @@ class Show {
       <ul class="todo">
         <li *ngFor="#todo of todosRef | toArray">
           <button (click)="removeTodo(todo.$ref)">Remove</button>
-
-          <a [routerLink]="['Show', { id: todo.$key }]">{{ todo.name }}</a>
+          <a [routerLink]="['/Show', { id: todo.$key }]">{{ todo.name }}</a>
         </li>
       </ul>
 
