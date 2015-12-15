@@ -10,6 +10,7 @@
     <script>
       System.config({
         paths: {
+          'angular2/*': '/node_modules/angular2/*.js',
           'rxjs/*': '/node_modules/rxjs/*.js',
         },
 
@@ -18,18 +19,11 @@
           'todo': './',
         },
 
-        packages: {
-          'todo': {
-            defaultExtension: 'js'
-          },
-        },
-
         defaultJSExtensions: true,
       });
     </script>
 
-    <script src="/node_modules/angular2/bundles/angular2.js"></script>
-    <script src="/node_modules/angular2/bundles/router.js"></script>
+    <script src="/node_modules/angular2/bundles/angular2-polyfills.js"></script>
     <script src="/dist/farel/bundles/farel.js"></script>
 
     <script>
