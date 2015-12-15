@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/skipWhile';
 
@@ -29,7 +30,7 @@ export class FirebaseRxArray extends FirebaseRx {
       },
     ]);
 
-    this._collectionEvents = this.events.skipWhile(callback => {
+    this._collectionEvents = this.events.do(callback => {
       switch(callback.eventType) {
         case FirebaseEventType.ChildAdded:
           this._childAdded(callback.snapshot, callback.prevChild);
@@ -46,13 +47,8 @@ export class FirebaseRxArray extends FirebaseRx {
         case FirebaseEventType.ChildRemoved:
           this._childRemoved(callback.snapshot);
           break;
-
-        case FirebaseEventType.Value:
-          return false;
       }
-
-      return true;
-    }).map(callback => this._collection);
+    }).skipWhile(callback => callback.eventType !== FirebaseEventType.Value).map(callback => this._collection);
   }
 
   get collectionEvents(): Observable<any[]>{
