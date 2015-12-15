@@ -1,4 +1,4 @@
-import { BaseException } from './base_exception'
+import { BaseException } from '../core/base_exception'
 
 export class InvalidPipeArgumentException extends BaseException {
 }
