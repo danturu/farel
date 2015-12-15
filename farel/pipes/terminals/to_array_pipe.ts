@@ -22,12 +22,12 @@ export class ToArrayPipe implements TerminalPipeTransform {
 
   transform(firebaseQuery: string | FirebaseQuery, args: any[] = []): any {
     if (!isFirebaseRefsEqual(this._firebaseQuery, firebaseQuery)) {
-      this._firebaseQuery = toFirebaseQuery(firebaseQuery);
-
       if (firebaseQuery) {
+        this._firebaseQuery = toFirebaseQuery(firebaseQuery);
         this._firebaseAsync = new FirebaseRxArray(firebaseQuery).collectionEvents;
       } else {
-        this._firebaseAsync = Promise.resolve([]);
+        this._firebaseQuery = null;
+        this._firebaseAsync = Promise.resolve(null);
       }
     }
 

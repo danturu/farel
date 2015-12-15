@@ -24,14 +24,14 @@ export class ToObjectPipe implements TerminalPipeTransform {
 
   transform(firebaseQuery: string | FirebaseQuery, args: any[] = []): number {
     if (!isFirebaseRefsEqual(this._firebaseQuery, firebaseQuery)) {
-      this._firebaseQuery = toFirebaseQuery(firebaseQuery);
-
       if (firebaseQuery) {
+        this._firebaseQuery = toFirebaseQuery(firebaseQuery);
         this._firebaseAsync = new FirebaseRx(firebaseQuery, [{ eventType: FirebaseEventType.Value, once: true }]).events.map(event =>
           unwrapToObjectWithMeta(event.snapshot)
         );
       } else {
-        this._firebaseAsync = Promise.resolve({});
+        this._firebaseQuery = null;
+        this._firebaseAsync = Promise.resolve(null);
       }
     }
 
