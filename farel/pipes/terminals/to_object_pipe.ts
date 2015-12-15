@@ -27,7 +27,7 @@ export class ToObjectPipe implements TerminalPipeTransform {
       this._firebaseQuery = toFirebaseQuery(firebaseQuery);
 
       if (firebaseQuery) {
-        this._firebaseAsync = new FirebaseRx(firebaseQuery, [FirebaseEventType.Value]).events.map(event =>
+        this._firebaseAsync = new FirebaseRx(firebaseQuery, [{ eventType: FirebaseEventType.Value, once: true }]).events.map(event =>
           unwrapToObjectWithMeta(event.snapshot)
         );
       } else {

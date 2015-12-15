@@ -3,29 +3,47 @@ import { Observer } from 'rxjs/Observer';
 
 import { toFirebaseQuery } from '../utils/to_firebase_query';
 
-export enum FirebaseEventType { Added, Changed, Moved, Removed, Value }
+export enum FirebaseEventType { ChildAdded, ChildChanged, ChildMoved, ChildRemoved, Value }
 
-export type FirebaseEvent = { eventType: FirebaseEventType, snapshot: FirebaseDataSnapshot, prevChild: string }
+export type FirebaseEventCallback = { eventType: FirebaseEventType, snapshot: FirebaseDataSnapshot, prevChild: string }
 
-const FIREBASE_EVENT_NAME = {
-  [FirebaseEventType.Added]: 'child_added',
-  [FirebaseEventType.Changed]: 'child_changed',
-  [FirebaseEventType.Moved]: 'child_moved',
-  [FirebaseEventType.Removed]: 'child_removed',
-  [FirebaseEventType.Value]: 'value',
-}
+export type FirebaseEventDefenition = { eventType: FirebaseEventType, once?: boolean }
 
 export class FirebaseRx {
-  private _firebaseEvents: Observable<FirebaseEvent>;
   private _firebaseQuery: FirebaseQuery;
+  private _events: Observable<FirebaseEventCallback>;
 
-  constructor(firebaseQuery: string | FirebaseQuery, firebaseEvents: FirebaseEventType[]) {
+  constructor(firebaseQuery: string | FirebaseQuery, eventDefenitions: FirebaseEventDefenition[]) {
     this._firebaseQuery = toFirebaseQuery(firebaseQuery);
-    this._bindEvents(firebaseEvents);
+
+    this._events = Observable.create((observer: Observer<FirebaseEventCallback>) => {
+      return eventDefenitions.reduce((disposeCallback: Function, eventDefenition: FirebaseEventDefenition) => {
+        let eventName = this._normalizeEventName(eventDefenition.eventType);
+
+        let callback = (snapshot: FirebaseDataSnapshot, prevChild?: string) => {
+          observer.next({ eventType: eventDefenition.eventType, snapshot: snapshot, prevChild: prevChild });
+        }
+
+        let cancelCallback = (error: any) => {
+          observer.error(error);
+        }
+
+        if (eventDefenition.once) {
+          this._firebaseQuery.once(eventName, callback, cancelCallback);
+        } else {
+          this._firebaseQuery.on(eventName, callback, cancelCallback);
+        }
+
+        return () => {
+          this._firebaseQuery.off(eventName, callback);
+          disposeCallback();
+        }
+      }, () => {});
+    });
   }
 
-  get events(): Observable<FirebaseEvent> {
-    return this._firebaseEvents;
+  get events(): Observable<FirebaseEventCallback> {
+    return this._events;
   }
 
   ref() {
@@ -36,23 +54,22 @@ export class FirebaseRx {
     return this._firebaseQuery.toString();
   }
 
-  private _bindEvents(events: FirebaseEventType[]) {
-    this._firebaseEvents = Observable.create((observer: Observer<FirebaseEvent>) => {
-      let callbacks = {};
+  private _normalizeEventName(eventType: FirebaseEventType): string {
+    switch (eventType) {
+      case FirebaseEventType.ChildAdded:
+        return 'child_added';
 
-      events.forEach(eventType => {
-        callbacks[eventType] = this._firebaseQuery.on(FIREBASE_EVENT_NAME[eventType], (snapshot, prevChild) => {
-          observer.next({ eventType: eventType, snapshot: snapshot, prevChild: prevChild });
-        }, error => {
-          observer.error(error);
-        });
-      });
+      case FirebaseEventType.ChildChanged:
+        return 'child_changed';
 
-      return () => {
-        events.forEach(eventType => {
-          this._firebaseQuery.off(FIREBASE_EVENT_NAME[eventType], callbacks[eventType]);
-        });
-      }
-    });
+      case FirebaseEventType.ChildMoved:
+        return 'child_moved';
+
+      case FirebaseEventType.ChildRemoved:
+        return 'child_removed';
+
+      case FirebaseEventType.Value:
+        return 'value';
+    }
   }
 }

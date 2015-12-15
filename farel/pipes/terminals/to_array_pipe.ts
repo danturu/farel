@@ -27,7 +27,7 @@ export class ToArrayPipe implements TerminalPipeTransform {
       if (firebaseQuery) {
         this._firebaseAsync = new FirebaseRxArray(firebaseQuery).collectionEvents;
       } else {
-        this._firebaseAsync = Promise.resolve(0);
+        this._firebaseAsync = Promise.resolve([]);
       }
     }
 
