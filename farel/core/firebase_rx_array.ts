@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/skipWhile';
 
 import { FirebaseRx, FirebaseEventType } from './firebase_rx';
 import { unwrapToObjectWithMeta } from '../utils/unwrap_to_object_with_meta';
@@ -28,24 +29,30 @@ export class FirebaseRxArray extends FirebaseRx {
       },
     ]);
 
-    this._collectionEvents = this.events.map(callback => {
+    this._collectionEvents = this.events.skipWhile(callback => {
       switch(callback.eventType) {
         case FirebaseEventType.ChildAdded:
-          return this._childAdded(callback.snapshot, callback.prevChild);
+          this._childAdded(callback.snapshot, callback.prevChild);
+          break;
 
         case FirebaseEventType.ChildChanged:
-          return this._childChanged(callback.snapshot);
+          this._childChanged(callback.snapshot);
+          break;
 
         case FirebaseEventType.ChildMoved:
-          return this._childMoved(callback.snapshot, callback.prevChild);
+          this._childMoved(callback.snapshot, callback.prevChild);
+          break;
 
         case FirebaseEventType.ChildRemoved:
-          return this._childRemoved(callback.snapshot);
+          this._childRemoved(callback.snapshot);
+          break;
 
         case FirebaseEventType.Value:
-          return this._collectionReady(callback.snapshot);
+          return false;
       }
-    });
+
+      return true;
+    }).map(callback => this._collection);
   }
 
   get collectionEvents(): Observable<any[]>{
@@ -54,8 +61,6 @@ export class FirebaseRxArray extends FirebaseRx {
 
   private _childAdded(snapshot: FirebaseDataSnapshot, prevChild: string) {
     this._collection.splice(this._nextChildIndex(prevChild), 0, unwrapToObjectWithMeta(snapshot));
-
-    return this._collection;
   }
 
   private _childChanged(snapshot: FirebaseDataSnapshot) {
@@ -64,8 +69,6 @@ export class FirebaseRxArray extends FirebaseRx {
     if (index > -1) {
       this._collection[index] = unwrapToObjectWithMeta(snapshot);
     }
-
-    return this._collection;
   }
 
   private _childMoved(snapshot: FirebaseDataSnapshot, prevChild: string) {
@@ -77,12 +80,6 @@ export class FirebaseRxArray extends FirebaseRx {
 
       this._collection.splice(newIndex, 0, movedChild);
     }
-
-    return this._collection;
-  }
-
-  private _collectionReady(snapshot: FirebaseDataSnapshot) {
-    return this._collection;
   }
 
   private _childRemoved(snapshot: FirebaseDataSnapshot) {
@@ -91,8 +88,6 @@ export class FirebaseRxArray extends FirebaseRx {
     if (index > -1) {
       this._collection.splice(index, 1)
     }
-
-    return this._collection;
   }
 
   private _indexForChild(key: string): number {
