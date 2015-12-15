@@ -3,7 +3,7 @@ import { AsyncPipe } from 'angular2/common'
 
 import { FirebaseRxArray } from '../../core/firebase_rx_array';
 import { FirebaseAsync } from '../../core/firebase_async'
-import { TerminalPipeTransform } from './terminal_pipe_transform';
+import { TerminalPipeTransform } from '../terminal_pipe_transform';
 import { isFirebaseRefsEqual } from '../../utils/is_firebase_refs_equal';
 import { toFirebaseQuery } from '../../utils/to_firebase_query';
 

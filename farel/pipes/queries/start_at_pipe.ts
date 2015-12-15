@@ -1,6 +1,6 @@
 import { Pipe } from 'angular2/core'
 
-import { QueryPipeTransform } from './query_pipe_transform'
+import { QueryPipeTransform } from '../query_pipe_transform'
 import { InvalidPipeArgumentException } from '../../core/invalid_pipe_argument_exception'
 import { toFirebaseQuery } from '../../utils/to_firebase_query'
 

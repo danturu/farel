@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 
 import { FirebaseAsync } from '../../core/firebase_async'
 import { FirebaseRx, FirebaseEventType } from '../../core/firebase_rx';
-import { TerminalPipeTransform } from './terminal_pipe_transform';
+import { TerminalPipeTransform } from '../terminal_pipe_transform';
 import { isFirebaseRefsEqual } from '../../utils/is_firebase_refs_equal';
 import { toFirebaseQuery } from '../../utils/to_firebase_query';
 
