@@ -1,37 +1,38 @@
-import { ChangeDetectorRef, Pipe } from 'angular2/core'
-import { AsyncPipe } from 'angular2/common'
+import { AsyncPipe } from 'angular2/common';
+import { ChangeDetectorRef, Pipe } from 'angular2/core';
+import { Observable } from 'rxjs/Observable';
 
-import { FirebaseRxArray } from '../../core/firebase_rx_array';
-import { FirebaseAsync } from '../../core/firebase_async'
+import { FarelArray } from '../../core/farel_array';
+import { FarelQuery } from '../../core/farel_ref';
+import { FarelRecordAttr } from '../../core/farel_record';
 import { TerminalPipeTransform } from '../terminal_pipe_transform';
-import { isFirebaseRefsEqual } from '../../utils/is_firebase_refs_equal';
-import { toFirebaseQuery } from '../../utils/to_firebase_query';
+import { isFarelEqual } from '../../util/is_farel_equal';
 
 @Pipe({
   name: 'toArray', pure: false
 })
 
-export class ToArrayPipe implements TerminalPipeTransform {
-  private _firebaseAsync: FirebaseAsync;
-  private _firebaseQuery: FirebaseQuery;
+export class ToArrayPipe<T extends FarelRecordAttr> implements TerminalPipeTransform<T> {
   private _asyncPipe: AsyncPipe;
+  private _emitter: Observable<T[]>;
+  private _ref: FarelQuery<T>;
 
   constructor(changeDetectorRef: ChangeDetectorRef) {
     this._asyncPipe = new AsyncPipe(changeDetectorRef);
   }
 
-  transform(firebaseQuery: string | FirebaseQuery, args: any[] = []): any {
-    if (!isFirebaseRefsEqual(this._firebaseQuery, firebaseQuery)) {
-      if (firebaseQuery) {
-        this._firebaseQuery = toFirebaseQuery(firebaseQuery);
-        this._firebaseAsync = new FirebaseRxArray(firebaseQuery).collectionEvents;
+  transform(ref: FarelQuery<T>, args: any[] = []): any {
+    if (!isFarelEqual(this._ref, ref)) {
+      this._ref = ref;
+
+      if (ref) {
+        this._emitter = new FarelArray(this._ref).changes;
       } else {
-        this._firebaseQuery = null;
-        this._firebaseAsync = Promise.resolve(null);
+        this._emitter = Observable.of(null);
       }
     }
 
-    return this._asyncPipe.transform(this._firebaseAsync);
+    return this._asyncPipe.transform(this._emitter);
   }
 
   ngOnDestroy() {

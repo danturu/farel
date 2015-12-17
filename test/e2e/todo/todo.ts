@@ -1,9 +1,17 @@
 import { View, Component, provide } from 'angular2/core'
 import { bootstrap } from 'angular2/platform/browser';
 import { ROUTER_PROVIDERS, ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig, LocationStrategy, HashLocationStrategy } from 'angular2/router'
-import { FAREL_PIPES } from 'farel/pipes'
-import { FAREL_DIRECTIVES } from 'farel/directives'
-import * as Firebase from 'firebase'
+import { FAREL_PIPES, FAREL_DIRECTIVES, Farel, FarelRecordAttr, FarelRecordFactory } from 'farel/farel'
+
+export interface TodoAttr extends FarelRecordAttr {
+  name: string;
+}
+
+export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
+  upperName() {
+    return this.name.toUpperCase();
+  }
+}
 
 @Component({
   selector: 'show'
@@ -19,7 +27,7 @@ import * as Firebase from 'firebase'
   ],
 
   template: `
-    <div [query]="todoRef | toObject" #todo="query">
+    <div [query]="todoRef  | toObject" #todo="query">
       <div *ngIf="todo.$key">
         {{ todo.name }}
       </div>
@@ -28,10 +36,11 @@ import * as Firebase from 'firebase'
 })
 
 class Show {
-  todoRef: Firebase;
+  todoRef: Farel<any>;
 
   constructor(params: RouteParams) {
-    this.todoRef = new Firebase('https://farel.firebaseio.com/todo').child(params.get('id'));
+
+  //  this.todoRef = new FarelRef('https://farel.firebaseio.com/todo').child(params.get('id'));
   }
 }
 
@@ -50,6 +59,7 @@ class Show {
 @View({
   directives: [
     ROUTER_DIRECTIVES,
+    FAREL_DIRECTIVES,
   ],
 
   pipes: [
@@ -60,10 +70,12 @@ class Show {
     <todo-key>{{ todosRef.toString() }}</todo-key>
 
     <aside>
-      <ul class="todo">
-        <li *ngFor="#todo of todosRef | toArray">
+      <ul class="todo" [query]="todosRef | limitToLast:10 | toArray" #todos="query">
+        <div *ngIf="!todos">Loading...</div>
+
+        <li *ngFor="#todo of todos.$value">
           <button (click)="removeTodo(todo.$ref)">Remove</button>
-          <a [routerLink]="['/Show', { id: todo.$key }]">{{ todo.name }}</a>
+          <a [routerLink]="['/Show', { id: todo.$key }]">{{ todo.upperName() }}</a>
         </li>
       </ul>
 
@@ -77,15 +89,15 @@ class Show {
 })
 
 export class Todo {
-  todosRef: Firebase;
+  todosRef: Farel<TodoRecord>;
 
   constructor() {
-    this.todosRef = new Firebase('https://farel.firebaseio.com/todo');
+    this.todosRef = new Farel('https://farel.firebaseio.com/todo', { useFactory: TodoRecord });
   }
 
   addTodo(event: any, name: string) {
     if (event.which === 13) {
-      this.todosRef.push({ name: name });
+      this.todosRef.ref.push({ name: name });
     }
   }
 

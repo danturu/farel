@@ -1,23 +1,22 @@
-import { Pipe } from 'angular2/core'
+import { Pipe } from 'angular2/core';
 
-import { InvalidPipeArgumentException } from '../invalid_pipe_argument_exception'
-import { QueryPipeTransform } from '../query_pipe_transform'
-import { toFirebaseQuery } from '../../utils/to_firebase_query'
+import { FarelQuery } from '../../core/farel_ref';
+import { FarelRecordAttr } from '../../core/farel_record';
+import { InvalidPipeArgumentException } from '../invalid_pipe_argument_exception';
+import { QueryPipeTransform } from '../query_pipe_transform';
 
 @Pipe({
   name: 'child',
 })
 
-export class ChildPipe implements QueryPipeTransform {
-  transform(firebaseQuery: string | FirebaseQuery, args: string[]): FirebaseQuery {
-    if (!firebaseQuery) {
-      return null;
-    }
+export class ChildPipe<T extends FarelRecordAttr> implements QueryPipeTransform<T> {
+  transform(ref: FarelQuery<T>, args: any[]): FarelQuery<T> {
+    if (!ref) return null;
 
     if (!args || args.length == 0) {
       throw new InvalidPipeArgumentException('Child pipe requires the key argument');
     }
 
-    return toFirebaseQuery(firebaseQuery).ref().child(args[0]);
+    return ref.chain(query => query.ref().child(args[0]));
   }
 }

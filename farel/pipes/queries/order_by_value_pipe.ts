@@ -1,18 +1,17 @@
-import { Pipe } from 'angular2/core'
+import { Pipe } from 'angular2/core';
 
-import { QueryPipeTransform } from '../query_pipe_transform'
-import { toFirebaseQuery } from '../../utils/to_firebase_query'
+import { FarelQuery } from '../../core/farel_ref';
+import { FarelRecordAttr } from '../../core/farel_record';
+import { QueryPipeTransform } from '../query_pipe_transform';
 
 @Pipe({
   name: 'orderByValue',
 })
 
-export class OrderByValuePipe implements QueryPipeTransform {
-  transform(firebaseQuery: string | FirebaseQuery, args: string[] = []): FirebaseQuery {
-    if (!firebaseQuery) {
-      return null;
-    }
+export class OrderByValuePipe<T extends FarelRecordAttr> implements QueryPipeTransform<T> {
+  transform(ref: FarelQuery<T>, args: any[] = []): FarelQuery<T> {
+    if (!ref) return null;
 
-    return toFirebaseQuery(firebaseQuery).orderByValue();
+    return ref.chain(query => query.orderByValue());
   }
 }

@@ -1,44 +1,49 @@
-import { ChangeDetectorRef, Pipe } from 'angular2/core'
 import { AsyncPipe } from 'angular2/common'
-import 'rxjs/add/operator/map';
+import { ChangeDetectorRef, Pipe } from 'angular2/core'
+import { Observable } from 'rxjs/Observable';
 
-import { FirebaseAsync } from '../../core/firebase_async'
-import { FirebaseRx, FirebaseEventType } from '../../core/firebase_rx';
+import { FarelQuery } from '../../core/farel_ref';
+import { FarelRecordAttr } from '../../core/farel_record';
+import { FirebaseEmitter, FirebaseEventType } from '../../core/firebase_emitter';
 import { TerminalPipeTransform } from '../terminal_pipe_transform';
-import { isFirebaseRefsEqual } from '../../utils/is_firebase_refs_equal';
-import { toFirebaseQuery } from '../../utils/to_firebase_query';
-import { unwrapToObjectWithMeta } from '../../utils/unwrap_to_object_with_meta'
+import { isFarelEqual } from '../../util/is_farel_equal';
+
+import 'rxjs/add/operator/map';
 
 @Pipe({
   name: 'toObject', pure: false,
 })
 
-export class ToObjectPipe implements TerminalPipeTransform {
-  private _firebaseAsync: FirebaseAsync;
-  private _firebaseQuery: FirebaseQuery;
+export class ToObjectPipe<T extends FarelRecordAttr> implements TerminalPipeTransform<T> {
   private _asyncPipe: AsyncPipe;
+  private _emitter: Observable<T>;
+  private _ref: FarelQuery<T>;
 
   constructor(changeDetectorRef: ChangeDetectorRef) {
     this._asyncPipe = new AsyncPipe(changeDetectorRef);
   }
 
-  transform(firebaseQuery: string | FirebaseQuery, args: any[] = []): number {
-    if (!isFirebaseRefsEqual(this._firebaseQuery, firebaseQuery)) {
-      if (firebaseQuery) {
-        this._firebaseQuery = toFirebaseQuery(firebaseQuery);
-        this._firebaseAsync = new FirebaseRx(firebaseQuery, [{ eventType: FirebaseEventType.Value, once: true }]).events.map(event =>
-          unwrapToObjectWithMeta(event.snapshot)
+  transform(ref: FarelQuery<T>, args: any[] = []): any {
+    if (!isFarelEqual(this._ref, ref)) {
+      this._ref = ref;
+
+      if (ref) {
+        this._emitter = new FirebaseEmitter(this._ref.ref, [{ eventType: FirebaseEventType.Value }]).callbacks.map(callback =>
+          this._serialize(callback.snapshot)
         );
       } else {
-        this._firebaseQuery = null;
-        this._firebaseAsync = Promise.resolve(null);
+        this._emitter = Observable.of(null);
       }
     }
 
-    return this._asyncPipe.transform(this._firebaseAsync);
+    return this._asyncPipe.transform(this._emitter);
   }
 
   ngOnDestroy() {
     this._asyncPipe.ngOnDestroy();
+  }
+
+  private _serialize(snapshot: FirebaseDataSnapshot): T {
+    return <T>new this._ref.factory(snapshot);
   }
 }

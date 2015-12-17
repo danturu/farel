@@ -1,23 +1,22 @@
-import { Pipe } from 'angular2/core'
+import { Pipe } from 'angular2/core';
 
-import { InvalidPipeArgumentException } from '../invalid_pipe_argument_exception'
-import { QueryPipeTransform } from '../query_pipe_transform'
-import { toFirebaseQuery } from '../../utils/to_firebase_query'
+import { FarelQuery } from '../../core/farel_ref';
+import { FarelRecordAttr } from '../../core/farel_record';
+import { InvalidPipeArgumentException } from '../invalid_pipe_argument_exception';
+import { QueryPipeTransform } from '../query_pipe_transform';
 
 @Pipe({
   name: 'limitToFirst',
 })
 
-export class LimitToFirstPipe implements QueryPipeTransform {
-  transform(firebaseQuery: string | FirebaseQuery, args: number[]): FirebaseQuery {
-    if (!firebaseQuery) {
-      return null;
-    }
+export class LimitToFirstPipe<T extends FarelRecordAttr> implements QueryPipeTransform<T> {
+  transform(ref: FarelQuery<T>, args: any[]): FarelQuery<T> {
+    if (!ref) return null;
 
     if (!args || args.length == 0) {
       throw new InvalidPipeArgumentException('LimitToFirst pipe requires the limit argument');
     }
 
-    return toFirebaseQuery(firebaseQuery).limitToFirst(args[0]);
+    return ref.chain(query => query.limitToFirst(args[0]));
   }
 }

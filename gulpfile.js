@@ -71,25 +71,12 @@ gulp.task('build.js', done =>
 gulp.task('build.bundle', () => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.bundle('farel/pipes + farel/directives', 'dist/farel/bundles/farel.js', { sourceMaps: true });
+  return builder.bundle('farel/farel', 'dist/farel/bundles/farel.js', { sourceMaps: true });
 });
 
-gulp.task('build.bundle.min', done => {
+gulp.task('build.bundle.min', () => {
   let builder = new Builder('dist', bundleConfig);
-
-  return builder.bundle('farel/pipes & farel/directives', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
-});
-
-gulp.task('build.bundle.sfx', () => {
-  let builder = new Builder('dist', bundleConfig);
-
-  return builder.buildStatic('farel/pipes + farel/directives', 'dist/farel/bundles/farel.sfx.js', { runtime: false, sourceMaps: true })
-});
-
-gulp.task('build.bundle.sfx.min', () => {
-  let builder = new Builder('dist', bundleConfig);
-
-  return builder.buildStatic('farel/pipes & farel/directives', 'dist/farel/bundles/farel.sfx.min.js', { runtime: false, sourceMaps: true, minify: true })
+return builder.bundle('farel/farel', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
 });
 
 gulp.task('build.package', () =>
@@ -99,8 +86,6 @@ gulp.task('build.package', () =>
 gulp.task('build.release', done => sequence('clean', ['build.js'], [
   'build.bundle',
   'build.bundle.min',
-  'build.bundle.sfx',
-  'build.bundle.sfx.min',
   'build.package',
 ], done));
 

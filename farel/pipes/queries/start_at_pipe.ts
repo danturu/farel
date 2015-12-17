@@ -1,23 +1,22 @@
-import { Pipe } from 'angular2/core'
+import { Pipe } from 'angular2/core';
 
-import { QueryPipeTransform } from '../query_pipe_transform'
-import { InvalidPipeArgumentException } from '../invalid_pipe_argument_exception'
-import { toFirebaseQuery } from '../../utils/to_firebase_query'
+import { FarelQuery } from '../../core/farel_ref';
+import { FarelRecordAttr } from '../../core/farel_record';
+import { InvalidPipeArgumentException } from '../invalid_pipe_argument_exception';
+import { QueryPipeTransform } from '../query_pipe_transform';
 
 @Pipe({
   name: 'startAt',
 })
 
-export class StartAtPipe implements QueryPipeTransform {
-  transform(firebaseQuery: string | FirebaseQuery, args: any[]): FirebaseQuery {
-    if (!firebaseQuery) {
-      return null;
-    }
+export class StartAtPipe<T extends FarelRecordAttr> implements QueryPipeTransform<T> {
+  transform(ref: FarelQuery<T>, args: any[]): FarelQuery<T> {
+    if (!ref) return null;
 
     if (!args || args.length == 0) {
-      throw new InvalidPipeArgumentException('StartAt pipe requires the value to start at argument');
+      throw new InvalidPipeArgumentException('StartAt pipe requires at least one argument');
     }
 
-    return toFirebaseQuery(firebaseQuery).startAt(args[0], args[1]);
+    return ref.chain(query => query.startAt(args[0], args[1]));
   }
 }

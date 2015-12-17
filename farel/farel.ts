@@ -1,3 +1,21 @@
+// Core
+
+export { FarelArray } from './core/farel_array'
+export { FarelRecord, FarelRecordAttr, FarelRecordFactory, FarelRecordConstructor } from './core/farel_record'
+export { Farel, FarelQuery } from './core/farel_ref'
+export { FirebaseEmitter } from './core/firebase_emitter'
+
+// Directives
+
+import { Query } from './directives/query'
+export { Query } from './directives/query'
+
+export const FAREL_DIRECTIVES = [
+  Query,
+]
+
+// Pipes
+
 import { ChildPipe } from './pipes/queries/child_pipe'
 import { EndAtPipe } from './pipes/queries/end_at_pipe'
 import { EqualToPipe } from './pipes/queries/equal_to_pipe'
