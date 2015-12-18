@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { FarelArray } from '../../core/farel_array';
 import { FarelQuery } from '../../core/farel_ref';
 import { FarelRecordAttr } from '../../core/farel_record';
-import { TerminalPipeTransform } from '../terminal_pipe_transform';
+import { TerminalPipeTransform, nullObservable } from '../terminal_pipe_transform';
 import { isFarelEqual } from '../../util/is_farel_equal';
 
 @Pipe({
@@ -28,7 +28,7 @@ export class ToArrayPipe<T extends FarelRecordAttr> implements TerminalPipeTrans
       if (ref) {
         this._emitter = new FarelArray(this._ref).changes;
       } else {
-        this._emitter = Observable.of(null);
+        this._emitter = nullObservable;
       }
     }
 

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { FarelQuery } from '../../core/farel_ref';
 import { FarelRecordAttr } from '../../core/farel_record';
 import { FirebaseEmitter, FirebaseEventType } from '../../core/firebase_emitter';
-import { TerminalPipeTransform } from '../terminal_pipe_transform';
+import { TerminalPipeTransform, nullObservable } from '../terminal_pipe_transform';
 import { isFarelEqual } from '../../util/is_farel_equal';
 
 import 'rxjs/add/operator/map';
@@ -32,7 +32,7 @@ export class ToObjectPipe<T extends FarelRecordAttr> implements TerminalPipeTran
           this._serialize(callback.snapshot)
         );
       } else {
-        this._emitter = Observable.of(null);
+        this._emitter = nullObservable;
       }
     }
 
