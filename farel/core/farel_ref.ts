@@ -37,7 +37,7 @@ export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
     return this._ref.ref();
   }
 
-  child(path: string) {
-    new Farel(this.ref.child(path), this._options);
+  child(path: string): Farel<T> {
+    return new Farel(this.ref.child(path), this._options);
   }
 }
