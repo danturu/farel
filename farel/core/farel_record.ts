@@ -23,6 +23,6 @@ export class FarelRecord implements FarelRecordAttr {
   }
 }
 
-export function FarelRecordFactory<T extends FarelRecordAttr>() {
+export function FarelRecordFactory<T extends FarelRecordAttr>(): FarelRecordConstructor<T> {
   return <FarelRecordConstructor<T>>FarelRecord;
 }
