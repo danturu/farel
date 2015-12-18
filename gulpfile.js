@@ -71,12 +71,13 @@ gulp.task('build.js', done =>
 gulp.task('build.bundle', () => {
   let builder = new Builder('dist', bundleConfig);
 
-  return builder.bundle('farel/farel', 'dist/farel/bundles/farel.js', { sourceMaps: true });
+  return builder.bundle('farel/core + farel/common', 'dist/farel/bundles/farel.js', { sourceMaps: true });
 });
 
 gulp.task('build.bundle.min', () => {
   let builder = new Builder('dist', bundleConfig);
-return builder.bundle('farel/farel', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
+
+  return builder.bundle('farel/core + farel/common', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
 });
 
 gulp.task('build.package', () =>
