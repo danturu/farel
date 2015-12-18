@@ -16,7 +16,7 @@
 
         map: {
           'firebase': '/node_modules/firebase/lib/firebase-web.js',
-          'todo': './',
+          'app': '.',
         },
 
         defaultJSExtensions: true,
@@ -24,10 +24,9 @@
     </script>
 
     <script src="/node_modules/angular2/bundles/angular2-polyfills.js"></script>
-    <script src="/dist/farel/bundles/farel.js"></script>
 
     <script>
-      System.import('todo/todo').catch(console.log.bind(console));
+      System.import('app/bootstrap').catch(console.log.bind(console));
     </script>
   </head>
 
