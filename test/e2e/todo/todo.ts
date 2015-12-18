@@ -29,8 +29,8 @@ export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
 
   template: `
     <div [query]="todoRef | toObject" #todo="query">
-      <div *ngIf="todo.$key">
-        {{ todo.name }}
+      <div *ngIf="todo.$value">
+        {{ todo.$value.name }}
       </div>
     </div>
   `,
