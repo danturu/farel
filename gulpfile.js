@@ -1,5 +1,7 @@
 'use strict';
 
+let Builder = require('systemjs-builder');
+let connect = require('gulp-connect');
 let cprocess = require('child_process');
 let del = require('del');
 let dotenv = require('dotenv');
@@ -7,8 +9,6 @@ let gulp = require('gulp');
 let karma = require('karma');
 let merge = require('merge2');
 let minimist = require('minimist');
-let connect = require('gulp-connect');
-let sequence = require('gulp-sequence');
 let sourcemaps = require('gulp-sourcemaps');
 let ts = require('gulp-typescript');
 
@@ -16,19 +16,45 @@ dotenv.load();
 
 let argv = minimist(process.argv);
 
+gulp.task('play', gulp.series(clean, buildJs, startServer, watchJs));
+
+gulp.task('bundle', gulp.series(clean, buildJs, gulp.parallel(bundleJs, bundleJsMin, copyPackageMeta)));
+
+gulp.task('test.unit', gulp.series(clean, buildJs, startKarma, watchJs));
+
+gulp.task('test.e2e', gulp.series(updateWebdriver, runProtractor));
+
+gulp.task('!test.unit/run', gulp.series(runKarma));
+
+gulp.task('!test.e2e/run', gulp.series(gulp.parallel(updateWebdriver, startServer), runProtractor));
+
 // Clean
 
-gulp.task('clean', done => del('dist', done));
+function clean() {
+  return del('dist');
+}
 
 // Build
 
-let Builder = require('systemjs-builder');
-
-let tsProject = ts.createProject('tsconfig.json', {
+let project = ts.createProject('tsconfig.json', {
   typescript: require('typescript'),
 });
 
-let bundleConfig = {
+function buildJs() {
+  let result = gulp.src(['{farel,test,typings}/**/*.ts']).pipe(sourcemaps.init()).pipe(ts(project));
+
+  return merge([
+    result.js.pipe(sourcemaps.write()).pipe(gulp.dest('dist')), result.dts.pipe(gulp.dest('dist')),
+  ]);
+}
+
+function watchJs() {
+  gulp.watch('{farel,test,typings}/**/*.ts', buildJs);
+}
+
+// Bundle
+
+let builder = new Builder('dist', {
   paths: {
     'farel/*': 'farel/*.js',
   },
@@ -46,126 +72,54 @@ let bundleConfig = {
       build: false,
     },
   },
-};
-
-gulp.task('build.src.js', () => {
-  let result = gulp.src(['{farel,typings}/**/*.ts']).pipe(sourcemaps.init()).pipe(ts(tsProject));
-
-  return merge([
-    result.js.pipe(sourcemaps.write()).pipe(gulp.dest('dist')), result.dts.pipe(gulp.dest('dist')),
-  ]);
-})
-
-gulp.task('build.test.js', () => {
-  let result = gulp.src(['{test,typings}/**/*.ts']).pipe(sourcemaps.init()).pipe(ts(tsProject));
-
-  return merge([
-    result.js.pipe(sourcemaps.write()).pipe(gulp.dest('dist')), gulp.src('test/**/*.html', { base: '.' }).pipe(gulp.dest('dist'))
-  ]);
 });
 
-gulp.task('build.js', done =>
-  sequence('build.src.js', 'build.test.js', done)
-);
-
-gulp.task('build.bundle', () => {
-  let builder = new Builder('dist', bundleConfig);
-
+function bundleJs() {
   return builder.bundle('farel/core + farel/common', 'dist/farel/bundles/farel.js', { sourceMaps: true });
-});
+}
 
-gulp.task('build.bundle.min', () => {
-  let builder = new Builder('dist', bundleConfig);
-
+function bundleJsMin() {
   return builder.bundle('farel/core + farel/common', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
-});
+}
 
-gulp.task('build.package', () =>
-  gulp.src(['package.json', 'README.md', 'LICENSE']).pipe(gulp.dest('dist/farel'))
-);
+function copyPackageMeta() {
+  return gulp.src(['package.json', 'README.md', 'LICENSE']).pipe(gulp.dest('dist/farel'))
+}
 
-gulp.task('build.release', done => sequence('clean', ['build.js'], [
-  'build.bundle',
-  'build.bundle.min',
-  'build.package',
-], done));
+// Serve
 
-// Watch
+var serverProcess = null;
 
-gulp.task('watch.js', () =>
-  gulp.watch('{farel,test,typings}/**/*', ['build.js'])
-);
-
-gulp.task('watch.release', () =>
-  gulp.watch('{farel,test,typings}/**/*', ['build.release'])
-);
+function startServer(done) {
+  connect.server({ port: '8001', root: [__dirname] }); done();
+}
 
 // Test
 
-let BROWSER_ALIASES = require('./browser-providers').BROWSER_ALIASES;
+function startKarma(done) {
+  let server = new karma.Server({ configFile: `${__dirname}/karma.conf.js`, logLevel: 'error' });
 
-gulp.task('!test.unit/karma-server', done => {
-  let server = new karma.Server({ configFile: `${__dirname}/karma.conf.js` });
+  server.once('run_complete', () => done()).start();
+}
 
-  server.once('run_complete', () => {
-    done();
-  });
+function runKarma(done) {
+  let browsers = require('./browser-providers').BROWSER_ALIASES[argv.browsers || 'ALL'];
 
-  server.start();
-});
-
-gulp.task('!test.unit/karma-run', done => {
-  cprocess.exec(`node_modules/.bin/karma run karma.conf.js`, () => done());
-});
-
-gulp.task('!test.unit/webdriver-update', done => {
-  cprocess.spawn(`node_modules/.bin/webdriver-manager`, ['update'], { stdio: 'inherit' }).on('close', (error) => {
-    done(); error ? process.exit(1) : 0;
-  });
-});
-
-gulp.task('!test.unit/protractor-run', done => {
-  cprocess.spawn(`node_modules/.bin/protractor`, ['protractor.conf.js'], { stdio: 'inherit' }).on('close', (error) => {
-    done(); error ? process.exit(1) : 0;
-  });
-});
-
-gulp.task('!test.unit/firebase-server', () => {
-  new require('firebase-server')(5000, 'test.firebaseio.com');
-});
-
-gulp.task('test.unit', (done) => {
-  sequence('clean', 'build.js', '!test.unit/karma-server', () => {
-    gulp.watch(`{farel,test,typings}/**/*`, { ignoreInitial: true }, () => sequence('build.js', '!test.unit/karma-run')());
-  });
-});
-
-gulp.task('!test.unit/run', done => {
-  let server = new karma.Server({ configFile: `${__dirname}/karma.conf.js`, singleRun: true, browsers: BROWSER_ALIASES[argv.browsers || 'ALL'] }, error => {
+  let server = new karma.Server({ configFile: `${__dirname}/karma.conf.js`, singleRun: true, browsers: browsers }, error => {
     done(); process.exit(error ? 1 : 0);
   });
 
   server.start();
-});
+}
 
-gulp.task('test.e2e', done => {
-  sequence('!test.unit/webdriver-update', '!test.unit/protractor-run', done);
-});
-
-gulp.task('!test.e2e/run', done => {
-  sequence('serve.e2e', '!test.unit/webdriver-update', '!test.unit/protractor-run', () => {
-    done(); connect.serverClose();
+function updateWebdriver(done) {
+  cprocess.spawn(`node_modules/.bin/webdriver-manager`, ['update'], { stdio: 'inherit' }).on('close', (error) => {
+    done(); error ? process.exit(1) : 0;
   });
-});
+}
 
-gulp.task('!test/prepare', ['build.release']);
-
-// Serve
-
-gulp.task('serve.e2e', () => {
-  connect.server({ port: '8001', root: [__dirname] });
-});
-
-gulp.task('serve', (done) => {
-  sequence(['build.release', 'watch.release'], 'serve.e2e', done);
-});
+function runProtractor(done) {
+  cprocess.spawn(`node_modules/.bin/protractor`, ['protractor.conf.js'], { stdio: 'inherit' }).on('close', (error) => {
+    done(); process.exit(error ? 1 : 0);
+  });
+}

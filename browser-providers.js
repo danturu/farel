@@ -55,13 +55,6 @@ let CUSTOM_LAUNCHERS = module.exports.CUSTOM_LAUNCHERS = {
     version: '20',
   },
 
-  'SL_IOS7': {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    platform: 'OS X 10.10',
-    version: '7.1'
-  },
-
   'SL_IOS8': {
     base: 'SauceLabs',
     browserName: 'iphone',
@@ -132,7 +125,7 @@ let BROWSER_ALIASES = module.exports.BROWSER_ALIASES = {
   ],
 
   'IOS': [
-    'SL_IOS7', 'SL_IOS8', 'SL_IOS9',
+    'SL_IOS8', 'SL_IOS9',
   ],
 
   'SAFARI': [

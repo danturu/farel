@@ -20,7 +20,6 @@ let config = exports.config = {
     browserName: 'chrome',
   }],
 }
-var  a = [1,2];
 
 if (process.env.TRAVIS) {
   Object.assign(config, { sauceUser: process.env.SAUCE_USERNAME, sauceKey: process.env.SAUCE_ACCESS_KEY });

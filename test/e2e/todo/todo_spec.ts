@@ -1,4 +1,6 @@
-import * as Firebase from 'firebase';
+import { Farel } from '../../../farel/core';
+
+// https://github.com/angular/protractor/issues/2750
 
 describe('Todo App', () => {
   let flow = protractor.promise.controlFlow();
@@ -11,7 +13,7 @@ describe('Todo App', () => {
     flow.execute(waitOne);
   }
 
-  var todoRef = new Firebase('https://farel.firebaseio.com/todo');
+  let todoRef = new Farel('https://farel.firebaseio.com/todo');
 
   beforeEach((done) => {
     browser.get('/dist/test/e2e/todo').then(done);

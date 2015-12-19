@@ -21,6 +21,6 @@ install:
 - npm install
 
 script:
-- gulp !test/prepare
+- gulp bundle
 - gulp !test.unit/run
 - gulp !test.e2e/run

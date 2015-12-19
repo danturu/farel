@@ -6,32 +6,26 @@ System.config({
   baseURL: '/base/dist',
 
   paths: {
-    'angular2/angular2': '/base/node_modules/angular2/bundles/angular2.js',
+    'angular2/*': '/base/node_modules/angular2/*.js',
+    'rxjs/*': '/base/node_modules/rxjs/*.js',
+  },
+
+  map: {
     'firebase': '/base/node_modules/firebase/lib/firebase-web.js',
   },
 
-  meta: {
-    'angular2/angular2': {
-      format: 'register',
-    },
+  defaultJSExtensions: true,
 
-    'firebase': {
-      format: 'cjs',
-    }
-  },
+  //packages: {
+  //  'farel': {
+  //    defaultExtension: 'js'
+  //  },
 
-  packages: {
-    'farel': {
-      defaultExtension: 'js'
-    },
-
-    'test': {
-      defaultExtension: 'js'
-    },
-  }
+  //  'test': {
+  //    defaultExtension: 'js'
+  //  },
+  //}
 });
-
-var FIREBASE_URL = 'http://127.0.1:5000/';
 
 Promise.all(Object.keys(__karma__.files).filter(isSpecFile).map(importSpecModule)).then(
   function() {
@@ -55,7 +49,7 @@ function isSpecFile(path) {
 function importSpecModule(path) {
   return System.import(path).then(function(module) {
     if (module.hasOwnProperty('main')) {
-      module.main(FIREBASE_URL);
+      module.main(null);
     } else {
       throw new Error('Module ' + path + ' does not implement main() method.');
     }

@@ -6,5 +6,3 @@ export class SpyChangeDetectorRef {
   markForCheck() {
   }
 }
-
-
