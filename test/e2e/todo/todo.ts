@@ -1,4 +1,4 @@
-import { View, Component, ChangeDetectionStrategy } from 'angular2/core';
+import { Component, ChangeDetectionStrategy } from 'angular2/core';
 import { ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig } from 'angular2/router';
 
 import { Farel, FarelRecordAttr, FarelRecordFactory } from '../../../farel/core';
@@ -16,9 +16,7 @@ export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
 
 @Component({
   selector: 'show',
-})
 
-@View({
   directives: [
     FAREL_DIRECTIVES,
   ],
@@ -46,10 +44,9 @@ class ShowTodo {
 
 @Component({
   selector: 'app',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
 
-@View({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
   directives: [
     FAREL_DIRECTIVES,
     ROUTER_DIRECTIVES,
@@ -78,7 +75,7 @@ class ShowTodo {
     <main>
       <router-outlet></router-outlet>
     </main>
-  `
+  `,
 })
 
 @RouteConfig([
