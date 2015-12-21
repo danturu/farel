@@ -1,3 +1,6 @@
+import { Observable } from 'rxjs/observable';
+import { Observer } from 'rxjs/observer';
+
 import * as Firebase from 'firebase';
 
 import { FarelRecord, FarelRecordConstructor, FarelRecordAttr } from './farel_record';
@@ -29,12 +32,34 @@ export class FarelQuery<T extends FarelRecordAttr> {
 }
 
 export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
+  private _onAuth: Observable<FirebaseAuthData>;
+
   constructor(ref: string | Firebase, options: FarelOptions<T> = {}) {
     super(typeof ref === 'string' ? new Firebase(ref) : ref, options);
   }
 
   get ref(): Firebase {
     return this._ref.ref();
+  }
+
+  get onAuth(): Observable<FirebaseAuthData> {
+    if (this._onAuth) {
+      return this._onAuth;
+    }
+
+    this._onAuth = Observable.create((observer: Observer<FirebaseAuthData>) => {
+      let authCallback = (authData: FirebaseAuthData) => {
+        observer.next(authData);
+      }
+
+      this.ref.onAuth(authCallback);
+
+      return () => {
+        this.ref.offAuth(authCallback);
+      }
+    });
+
+    return this._onAuth;
   }
 
   child(path: string): Farel<T> {
