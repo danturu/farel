@@ -5,11 +5,7 @@ import { Directive } from 'angular2/core';
 })
 
 export class Query {
-  set result(value: any) {
-    if (value) {
-      this['$value'] = value;
-    } else {
-      delete this['$value'];
-    }
+  set result(val: any) {
+    val ? this['$val'] = val : delete this['$val'];
   }
 }

@@ -27,8 +27,8 @@ export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
 
   template: `
     <div [query]="todoRef | toObject" #todo="query">
-      <div *ngIf="todo.$value">
-        {{ todo.$value.name }}
+      <div *ngIf="todo.$val">
+        {{ todo.$val.name }}
       </div>
     </div>
   `,
@@ -61,9 +61,9 @@ class ShowTodo {
 
     <aside>
       <ul class="todo" [query]="todosRef | limitToLast:10 | toArray" #todos="query">
-        <div *ngIf="!todos">Loading...</div>
+        <div *ngIf="!todos.$val">Loading...</div>
 
-        <li *ngFor="#todo of todos.$value">
+        <li *ngFor="#todo of todos.$val">
           <a [routerLink]="['Todo', { id: todo.$key }]">{{ todo.upperName() }}</a>
           <button (click)="removeTodo(todo.$ref)">Remove</button>
         </li>
