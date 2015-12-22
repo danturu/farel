@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs/observable';
-import { Observer } from 'rxjs/observer';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 
 import * as Firebase from 'firebase';
 
