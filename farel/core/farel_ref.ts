@@ -38,6 +38,10 @@ export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
     super(typeof ref === 'string' ? new Firebase(ref) : ref, options);
   }
 
+  static create<T extends FarelRecordAttr>(ref: string | Firebase, options: FarelOptions<T> = {}): Farel<T> {
+    return new Farel<T>(ref, options);
+  };
+
   get ref(): Firebase {
     return this._ref.ref();
   }
