@@ -1,7 +1,7 @@
 {
   "name": "farel",
   "description": "Angular 2 pipes and directives for Firebase",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "homepage": "https://github.com/rosendi/farel",
   "license": "MIT",
   "repository": {
