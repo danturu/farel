@@ -46,6 +46,10 @@ export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
     return this._ref.ref();
   }
 
+  get key(): string {
+    return this._ref.ref().key();
+  }
+
   get onAuth(): Observable<FirebaseAuthData> {
     if (this._onAuth) {
       return this._onAuth;
