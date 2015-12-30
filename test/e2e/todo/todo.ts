@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from 'angular2/core';
 import { ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig } from 'angular2/router';
 
-import { Farel, FarelRecordAttr, FarelRecordFactory } from '../../../farel/core';
+import { Farel, FarelRecord, FarelRecordAttr, FarelRecordFactory } from '../../../farel/core';
 import { FAREL_PIPES, FAREL_DIRECTIVES } from '../../../farel/common';
 
 export interface TodoAttr extends FarelRecordAttr {
@@ -28,7 +28,7 @@ export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
   template: `
     <div [query]="todoRef | toObject" #todo="query">
       <div *ngIf="todo.$val">
-        {{ todo.$val.name }}
+        {{ todo.$val.upperName() }}
       </div>
     </div>
   `,
@@ -37,8 +37,8 @@ export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
 class ShowTodo {
   todoRef: Farel<TodoRecord>;
 
-  constructor(params: RouteParams) {
-    this.todoRef = new Farel('https://farel.firebaseio.com/todo').child(params.get('id'));
+  constructor(params: RouteParams, farel: Farel<FarelRecord>) {
+    this.todoRef = farel.child('todo', { useFactory: TodoRecord }).child(params.get('id'));
   }
 }
 
@@ -85,8 +85,8 @@ class ShowTodo {
 export class App {
   todosRef: Farel<TodoRecord>;
 
-  constructor() {
-    this.todosRef = new Farel('https://farel.firebaseio.com/todo', { useFactory: TodoRecord });
+  constructor(farel: Farel<FarelRecord>) {
+    this.todosRef = farel.child('todo', { useFactory: TodoRecord });
   }
 
   addTodo(event: KeyboardEvent, name: string) {

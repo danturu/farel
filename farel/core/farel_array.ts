@@ -44,7 +44,7 @@ export class FarelArray<T extends FarelRecordAttr> {
   }
 
   private _serialize(snapshot: FirebaseDataSnapshot): T {
-    return <T>new this._ref.factory(snapshot);
+    return <T>new this._ref.options.useFactory(snapshot);
   }
 
   private _childAdded(snapshot: FirebaseDataSnapshot, prevChild: string) {

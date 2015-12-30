@@ -1,3 +1,4 @@
+import { OpaqueToken, Injectable, Optional, Inject } from 'angular2/core';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 
@@ -5,42 +6,48 @@ import * as Firebase from 'firebase';
 
 import { FarelRecord, FarelRecordConstructor, FarelRecordAttr } from './farel_record';
 
-export type FarelDefaultRecordFactory<T extends FarelRecordAttr> = FarelRecordConstructor<T> | FarelRecordConstructor<FarelRecord>;
-
-export type FarelOptions<T extends FarelRecordAttr> = { useFactory?: FarelDefaultRecordFactory<T> };
+export type FarelOptions<T extends FarelRecordAttr> = {
+  useFactory?: FarelRecordConstructor<T> | FarelRecordConstructor<FarelRecord>;
+}
 
 export class FarelQuery<T extends FarelRecordAttr> {
-  constructor(protected _ref: FirebaseQuery, protected _options: FarelOptions<T> = {}) {
-    this._options.useFactory || (this._options.useFactory = FarelRecord);
+  constructor(protected _ref: FirebaseQuery, protected _options?: FarelOptions<T>) {
+    this._mergeOptions();
+  }
+
+  get options(): FarelOptions<T> {
+    return this._options;
   }
 
   get ref(): FirebaseQuery {
     return this._ref;
   }
 
-  get factory(): FarelDefaultRecordFactory<T> {
-    return this._options.useFactory;
-  }
-
-  toString() {
-    return this._ref.toString();
+  toString(): string {
+    return this.ref.toString();
   }
 
   chain(query: (ref: FirebaseQuery) => FirebaseQuery) {
     return new FarelQuery(query(this.ref), this._options);
   }
+
+  protected _mergeOptions() {
+    this._options = Object.keys(this._options || {}).reduce((options, key) => {
+      options[key] = this._options[key]; return options;
+    }, {
+      useFactory: FarelRecord,
+    });
+  }
 }
 
-export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
-  private _onAuth: Observable<FirebaseAuthData>;
+export const FAREL_BASE_URL: OpaqueToken = new OpaqueToken('farelBaseUrl');
+export const FAREL_DEFAULT_OPTIONS: OpaqueToken = new OpaqueToken('farelDefaultOptions');
 
-  constructor(ref: string | Firebase, options: FarelOptions<T> = {}) {
+@Injectable()
+export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
+  constructor(@Inject(FAREL_BASE_URL) ref: string | Firebase, @Optional() @Inject(FAREL_DEFAULT_OPTIONS) options?: FarelOptions<T>) {
     super(typeof ref === 'string' ? new Firebase(ref) : ref, options);
   }
-
-  static create<T extends FarelRecordAttr>(ref: string | Firebase, options: FarelOptions<T> = {}): Farel<T> {
-    return new Farel<T>(ref, options);
-  };
 
   get ref(): Firebase {
     return this._ref.ref();
@@ -49,6 +56,14 @@ export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
   get key(): string {
     return this._ref.ref().key();
   }
+
+  child(path: string, options?: FarelOptions<T>): Farel<T> {
+    return new Farel(this.ref.child(path), options || this._options);
+  }
+
+  /* TODO: refactor */
+
+  private _onAuth: Observable<FirebaseAuthData>;
 
   get onAuth(): Observable<FirebaseAuthData> {
     if (this._onAuth) {
@@ -68,9 +83,5 @@ export class Farel<T extends FarelRecordAttr> extends FarelQuery<T> {
     });
 
     return this._onAuth;
-  }
-
-  child(path: string): Farel<T> {
-    return new Farel(this.ref.child(path), this._options);
   }
 }

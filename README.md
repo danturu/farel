@@ -15,7 +15,7 @@ $ npm install farel --save-dev
 Or include this script tag from the CDN:
 
 ```
-<script src="https://cdn.jsdelivr.net/farel/0.2.0/farel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/farel/0.2.1/farel.min.js"></script>
 ```
 
 ## Basic Example
@@ -23,7 +23,7 @@ Or include this script tag from the CDN:
 [Live Demo](http://plnkr.co/edit/stDf4Ymr0SX5KGVbdh65)
 
 ```typescript
-import { Farel, FarelRecord } from 'farel/core';
+import { FAREL_BASE_URL, Farel, FarelRecord } from 'farel/core';
 import { FAREL_PIPES } from 'farel/common';
 
 @Component({
@@ -47,10 +47,11 @@ import { FAREL_PIPES } from 'farel/common';
 class Weather {
   citiesRef: Farel<FarelRecord>;
 
-  constructor() {
-    this.citiesRef = Farel.create('https://publicdata-weather.firebaseio.com');
+  constructor(public citiesRef: Farel<FarelRecord>) {
   }
 }
+
+bootstrap(Weather, provide(FAREL_BASE_URL, { useValue: 'https://publicdata-weather.firebaseio.com' });
 ```
 
 ## Retrieving Data
@@ -104,7 +105,7 @@ Available query pipes:
 
 ## Reuse Farel Expressions
 
-For cases when piped output is bound to many places within a template, it's beneficial to have a single piped expression. Farel will provide a `Query` directive that assigns an expression result to a local variable, until Angular 2 [starts supporting it](https://github.com/angular/angular/issues/2451) in a native way.
+For cases when piped output is bound to many places within a template, it's beneficial to have a single piped expression. Farel will provide the `Query` directive that assigns an expression result to a local variable, until Angular 2 [starts supporting it](https://github.com/angular/angular/issues/2451) in a native way.
 
 To use this directive in your Angular 2 application, import `FAREL_DIRECTIVES` from `'farel/common'` barrel and list it in the `@Component` decorator's directives array like in the example below.
 
@@ -153,7 +154,7 @@ class GreeterRecord extends FarelRecordFactory<GreeterAttr>() {
 Then we should tell Farel to use our own record factory:
 
 ```
-let greetersRef = Farel.create('...', { useFactory: GreeterRecord });
+let greetersRef = farel.child('...', { useFactory: GreeterRecord }); // each child will use the same factory
 ```
 
 Now any retrieved data by the `ToArrayPipe` or `ToObjectPipe` pipes will be transformed to `GreaterRecord` and both `message` and `greet` can be directly accessed in the Angular 2 templates:

@@ -44,6 +44,6 @@ export class ToObjectPipe<T extends FarelRecordAttr> implements TerminalPipeTran
   }
 
   private _serialize(snapshot: FirebaseDataSnapshot): T {
-    return <T>new this._ref.factory(snapshot);
+    return <T>new this._ref.options.useFactory(snapshot);
   }
 }
