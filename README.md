@@ -62,7 +62,7 @@ Farel will serialize Firebase data to `FarelRecord`, a plain javascript object w
 
 To use any of the Farel pipes in your Angular 2 application, import `FAREL_PIPES` from `'farel/common'` barrel and list them in the `@Component` decorator's pipes array as it's shown in the basic example above.
 
-NOTE: Farel pipes only work with Farel service, so any Firebase reference should be wrapped in the Farel reference like this `let ref = Farel.create(new Firebase('...'))`.
+NOTE: Farel pipes only work with Farel service, so any Firebase reference should be wrapped in the Farel reference like this `let ref = new Farel(new Firebase('...'))`.
 
 NOTE: Since Farel is reactive, don't forget to turn on the `OnPush` change detection strategy - this is a big win because it will only trigger change detection when a new value arrives, and you don't have to cache the custom methods in extended Farel records.
 
