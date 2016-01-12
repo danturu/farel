@@ -15,7 +15,7 @@ $ npm install farel --save-dev
 Or include this script tag from the CDN:
 
 ```
-<script src="https://cdn.jsdelivr.net/farel/0.3.0/farel.min.js"></script>
+<script src="https://npmcdn.com/farel@0.3.0/bundles/farel.min.js"></script>
 ```
 
 ## Basic Example
