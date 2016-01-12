@@ -37,7 +37,7 @@ import { FAREL_BASE_URL, Farel, FarelArray, FarelRecord } from 'farel/farel';
     <div *ngFor="#city of citiesRef | async">
       {{ city.$key }} | {{ city.currently.temperature }} °F
     </div>
-  `,
+  `
 })
 
 class Weather {
@@ -59,24 +59,24 @@ Farel will serialize Firebase data to extendable `FarelRecord`, a plain javascri
 
 NOTE: Since Farel is reactive, don't forget to turn on the `OnPush` change detection strategy - this is a big win because it will only trigger change detection when a new value arrives, and you don't have to cache the custom methods in extended Farel records.
 
-##### <T extends FarelRecord>asObject((ref: Firebase) => Firebase, Constructor<T>) => FarelObject<T>;
+##### `<T extends FarelRecord>asObject((ref: Firebase) => Firebase, RecordConstructor<T>) => FarelObject<T>`
 
 Creates an emitter for synchronized Farel record.
 
 Usage:
 
 ```javascript
-  ref: FarelObject<FarelRecord> = farel.asObject(ref => ref /* query firebase here */, FarelRecord);
+ref: FarelObject<FarelRecord> = farel.asObject(ref => ref /* query firebase here */, FarelRecord);
 ```
 
-##### <T extends FarelRecord>asArray((ref: Firebase) => Firebase, Constructor<T>) => FarelArray<T>;
+##### `<T extends FarelRecord>asArray((ref: Firebase) => Firebase, RecordConstructor<T>) => FarelArray<T>`
 
 Creates an emitter for a synchronized list of the Farel records. The list should not be modified directly; instead, local changes should be pushed to the server, which will then automatically trickle back.
 
 Usage:
 
 ```javascript
-  ref: FarelArray<FarelRecord> = farel.asArray(ref => ref /* query firebase here */, FarelRecord);
+ref: FarelArray<FarelRecord> = farel.asArray(ref => ref /* query firebase here */, FarelRecord);
 ```
 
 ## Reuse Angular expressions
@@ -85,7 +85,7 @@ For cases when piped output is bound to many places within a template, it's bene
 
 ```
 @Directive({
-  selector: '[query]', exportAs: 'query', inputs: ['result: query'],
+  selector: '[query]', exportAs: 'query', inputs: ['result: query']
 })
 
 class Query {
@@ -111,8 +111,8 @@ class Query {
         Loading...
       </span>
     <div>
-  `,
- });
+  `
+});
 ```
 
 ## Extending Farel Records
