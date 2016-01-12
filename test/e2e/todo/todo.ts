@@ -86,7 +86,7 @@ export class App {
   todosRef: FarelArray<TodoRecord>;
 
   constructor(farel: Farel) {
-    this.todosRef = farel.asArray(ref => ref.child('todo'), TodoRecord);
+    this.todosRef = farel.asArray(ref => ref.child('todo').limitToLast(5), TodoRecord);
   }
 
   addTodo(event: KeyboardEvent, name: string) {

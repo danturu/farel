@@ -16,9 +16,9 @@ export const FAREL_BASE_URL: OpaqueToken = new OpaqueToken('farelBaseUrl');
 
 @Injectable()
 export class Farel {
-  protected _ref: Firebase;
+  protected _ref: FirebaseQuery;
 
-  constructor(@Inject(FAREL_BASE_URL) ref: string | Firebase) {
+  constructor(@Inject(FAREL_BASE_URL) ref: string | FirebaseQuery) {
     this._ref = typeof ref === 'string' ? new Firebase(ref) : ref;
   }
 
@@ -30,19 +30,19 @@ export class Farel {
     return this._ref.toString();
   }
 
-  asObject<T extends FarelRecord>(query: (ref: Firebase) => Firebase, serializer: FarelRecordConstructor<T>): FarelObject<T> {
-    return new FarelObject(query(this._ref), serializer);
+  asObject<T extends FarelRecord>(query: (ref: Firebase) => FirebaseQuery, serializer: FarelRecordConstructor<T>): FarelObject<T> {
+    return new FarelObject(query(this.ref), serializer);
   }
 
-  asArray<T extends FarelRecord>(query: (ref: Firebase) => Firebase, serializer: FarelRecordConstructor<T>): FarelArray<T> {
-    return new FarelArray(query(this._ref), serializer);
+  asArray<T extends FarelRecord>(query: (ref: Firebase) => FirebaseQuery, serializer: FarelRecordConstructor<T>): FarelArray<T> {
+    return new FarelArray(query(this.ref), serializer);
   }
 }
 
 export class FarelObject<T extends FarelRecord> extends Farel {
   private _emitter: Observable<T>;
 
-  constructor(ref: Firebase, private _serializer: FarelRecordConstructor<T>) {
+  constructor(ref: FirebaseQuery, private _serializer: FarelRecordConstructor<T>) {
     super(ref);
     this._initEmitter();
   }
@@ -52,7 +52,7 @@ export class FarelObject<T extends FarelRecord> extends Farel {
   }
 
   private _initEmitter() {
-    let baseEmitter = new FirebaseEmitter(this.ref, [
+    let baseEmitter = new FirebaseEmitter(this._ref, [
       { eventType: FirebaseEventType.Value },
     ]);
 
@@ -70,7 +70,7 @@ export class FarelArray<T extends FarelRecord> extends Farel {
   private _emitter: Observable<T[]>;
   private _list: T[] = [];
 
-  constructor(ref: Firebase, private _serializer: FarelRecordConstructor<T>) {
+  constructor(ref: FirebaseQuery, private _serializer: FarelRecordConstructor<T>) {
     super(ref);
     this._initEmitter();
   }
@@ -80,7 +80,7 @@ export class FarelArray<T extends FarelRecord> extends Farel {
   }
 
   private _initEmitter() {
-    let baseEmitter = new FirebaseEmitter(this.ref, [
+    let baseEmitter = new FirebaseEmitter(this._ref, [
       { eventType: FirebaseEventType.ChildAdded },
       { eventType: FirebaseEventType.ChildChanged },
       { eventType: FirebaseEventType.ChildMoved },
