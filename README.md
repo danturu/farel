@@ -23,7 +23,7 @@ Or include this script tag from the CDN:
 [Live Demo](http://plnkr.co/edit/stDf4Ymr0SX5KGVbdh65)
 
 ```typescript
-import { FAREL_BASE_URL, Farel, FarelArray, FarelRecord } from 'farel/core';
+import { FAREL_BASE_URL, Farel, FarelArray, FarelRecord } from 'farel/farel';
 
 @Component({
   selector: 'app',
@@ -119,7 +119,7 @@ class Query {
 It is very easy to extend Farel records. All you have to do is subclass the `FarelRecord` class. In the next example, we will create a Farel record which has a serialized property `message` and a computed property `greet`.
 
 ```typescript
-import { Farel, FarelRecord} from 'farel/core';
+import { Farel, FarelRecord} from 'farel/farel';
 
 interface GreeterAttr {
   message: string;
