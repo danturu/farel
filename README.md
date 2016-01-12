@@ -141,12 +141,12 @@ Then we should tell Farel to use our own record factory:
 let greetersRef = farel.asArray(ref => ref, GreeterRecord);
 ```
 
-Now any retrieved data by the `ToArrayPipe` or `ToObjectPipe` pipes will be transformed to `GreaterRecord` and both `message` and `greet` can be directly accessed in the Angular 2 templates:
+Now any retrieved data by the async pipe will be transformed to `GreaterRecord` and both `message` and `greet` can be directly accessed in the Angular 2 templates:
 
 ```
-  <div *ngFor="greetersRef | toArray">
-    {{ contact.greet }}
-  </div>
+<div *ngFor="greetersRef | async">
+  {{ contact.greet }}
+</div>
 ```
 
 ## License
