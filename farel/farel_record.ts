@@ -1,15 +1,8 @@
-export interface FarelRecordConstructor<T extends FarelRecordAttr> {
+export interface FarelRecordConstructor<T extends FarelRecord> {
   new (snapshot: FirebaseDataSnapshot): T;
 }
 
-export interface FarelRecordAttr {
-  $snapshot: FirebaseDataSnapshot;
-  $ref: Firebase;
-  $key: string;
-  $val: any;
-}
-
-export class FarelRecord implements FarelRecordAttr {
+export class FarelRecord {
   $val: any;
 
   constructor(public $snapshot: FirebaseDataSnapshot) {
@@ -29,8 +22,4 @@ export class FarelRecord implements FarelRecordAttr {
   get $key(): string {
     return this.$snapshot.key();
   }
-}
-
-export function FarelRecordFactory<T extends FarelRecordAttr>(): FarelRecordConstructor<T> {
-  return <FarelRecordConstructor<T>>FarelRecord;
 }

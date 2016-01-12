@@ -1,7 +1,7 @@
 import { Component, Directive, ChangeDetectionStrategy } from 'angular2/core';
 import { ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig } from 'angular2/router';
 
-import { Farel, FarelObject, FarelArray, FarelRecord, FarelRecordAttr, FarelRecordFactory } from '../../../farel/farel';
+import { Farel, FarelObject, FarelArray, FarelRecord } from '../../../farel/farel';
 
 @Directive({
   selector: '[query]', exportAs: 'query', inputs: ['result: query'],
@@ -13,11 +13,13 @@ export class Query {
   }
 }
 
-export interface TodoAttr extends FarelRecordAttr {
+export interface TodoAttr {
   name: string;
 }
 
-export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
+export class TodoRecord extends FarelRecord {
+  name: string;
+
   upperName() {
     return this.name.toUpperCase();
   }

@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as Firebase from 'firebase';
 
 import { FirebaseEmitter, FirebaseEventType } from './firebase_emitter';
-import { FarelRecord, FarelRecordConstructor, FarelRecordAttr } from './farel_record';
+import { FarelRecord, FarelRecordConstructor } from './farel_record';
 
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
@@ -30,16 +30,16 @@ export class Farel {
     return this._ref.toString();
   }
 
-  asObject<T extends FarelRecordAttr>(query: (ref: Firebase) => Firebase, serializer: FarelRecordConstructor<T>): FarelObject<T> {
+  asObject<T extends FarelRecord>(query: (ref: Firebase) => Firebase, serializer: FarelRecordConstructor<T>): FarelObject<T> {
     return new FarelObject(query(this._ref), serializer);
   }
 
-  asArray<T extends FarelRecordAttr>(query: (ref: Firebase) => Firebase, serializer: FarelRecordConstructor<T>): FarelArray<T> {
+  asArray<T extends FarelRecord>(query: (ref: Firebase) => Firebase, serializer: FarelRecordConstructor<T>): FarelArray<T> {
     return new FarelArray(query(this._ref), serializer);
   }
 }
 
-export class FarelObject<T extends FarelRecordAttr> extends Farel {
+export class FarelObject<T extends FarelRecord> extends Farel {
   private _emitter: Observable<T>;
 
   constructor(ref: Firebase, private _serializer: FarelRecordConstructor<T>) {
@@ -66,7 +66,7 @@ export class FarelObject<T extends FarelRecordAttr> extends Farel {
   }
 }
 
-export class FarelArray<T extends FarelRecordAttr> extends Farel {
+export class FarelArray<T extends FarelRecord> extends Farel {
   private _emitter: Observable<T[]>;
   private _list: T[] = [];
 
