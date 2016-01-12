@@ -2,7 +2,7 @@ import { ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy } from 'angula
 import { bootstrap } from 'angular2/platform/browser';
 import { provide } from 'angular2/core';
 
-import { FAREL_BASE_URL, Farel } from '../../../farel/core';
+import { FAREL_BASE_URL, Farel } from '../../../farel/farel';
 import { App } from './todo'
 
 bootstrap(App, [ROUTER_PROVIDERS,

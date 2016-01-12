@@ -75,11 +75,11 @@ let builder = new Builder('dist', {
 });
 
 function bundleJs() {
-  return builder.bundle('farel/core + farel/common', 'dist/farel/bundles/farel.js', { sourceMaps: true });
+  return builder.bundle('farel/farel', 'dist/farel/bundles/farel.js', { sourceMaps: true });
 }
 
 function bundleJsMin() {
-  return builder.bundle('farel/core + farel/common', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
+  return builder.bundle('farel/farel', 'dist/farel/bundles/farel.min.js', { sourceMaps: true, minify: true });
 }
 
 function copyPackageMeta() {

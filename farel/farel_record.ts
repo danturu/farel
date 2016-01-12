@@ -3,11 +3,14 @@ export interface FarelRecordConstructor<T extends FarelRecordAttr> {
 }
 
 export interface FarelRecordAttr {
-  $snapshot: FirebaseDataSnapshot; $key: string; $val: any;
+  $snapshot: FirebaseDataSnapshot;
+  $ref: Firebase;
+  $key: string;
+  $val: any;
 }
 
 export class FarelRecord implements FarelRecordAttr {
-  $key: string; $val: any;
+  $val: any;
 
   constructor(public $snapshot: FirebaseDataSnapshot) {
     let val = this.$snapshot.val();
@@ -17,8 +20,14 @@ export class FarelRecord implements FarelRecordAttr {
     } else {
       Object.keys(val).forEach(key => this[key] = val[key]);
     }
+  }
 
-    this.$key = this.$snapshot.key();
+  get $ref(): Firebase {
+    return this.$snapshot.ref();
+  }
+
+  get $key(): string {
+    return this.$snapshot.key();
   }
 }
 

@@ -1,4 +1,4 @@
-import { Farel } from '../../../farel/core';
+import { Farel } from '../../../farel/farel';
 
 // https://github.com/angular/protractor/issues/2750
 

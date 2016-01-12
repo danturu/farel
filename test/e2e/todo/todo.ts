@@ -1,8 +1,17 @@
-import { Component, ChangeDetectionStrategy } from 'angular2/core';
+import { Component, Directive, ChangeDetectionStrategy } from 'angular2/core';
 import { ROUTER_DIRECTIVES, RouterOutlet, RouteParams, RouteConfig } from 'angular2/router';
 
-import { Farel, FarelRecord, FarelRecordAttr, FarelRecordFactory } from '../../../farel/core';
-import { FAREL_PIPES, FAREL_DIRECTIVES } from '../../../farel/common';
+import { Farel, FarelObject, FarelArray, FarelRecord, FarelRecordAttr, FarelRecordFactory } from '../../../farel/farel';
+
+@Directive({
+  selector: '[query]', exportAs: 'query', inputs: ['result: query'],
+})
+
+export class Query {
+  set result(val: any) {
+    val ? this['$val'] = val : delete this['$val'];
+  }
+}
 
 export interface TodoAttr extends FarelRecordAttr {
   name: string;
@@ -18,15 +27,11 @@ export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
   selector: 'show',
 
   directives: [
-    FAREL_DIRECTIVES,
-  ],
-
-  pipes: [
-    FAREL_PIPES,
+    Query,
   ],
 
   template: `
-    <div [query]="todoRef | toObject" #todo="query">
+    <div [query]="todoRef | async" #todo="query">
       <div *ngIf="todo.$val">
         {{ todo.$val.upperName() }}
       </div>
@@ -35,10 +40,10 @@ export class TodoRecord extends FarelRecordFactory<TodoAttr>() {
 })
 
 class ShowTodo {
-  todoRef: Farel<TodoRecord>;
+  todoRef: FarelObject<TodoRecord>;
 
-  constructor(params: RouteParams, farel: Farel<FarelRecord>) {
-    this.todoRef = farel.child('todo', { useFactory: TodoRecord }).child(params.get('id'));
+  constructor(params: RouteParams, farel: Farel) {
+    this.todoRef = farel.asObject(ref => ref.child('todo').child(params.get('id')), TodoRecord);
   }
 }
 
@@ -48,22 +53,15 @@ class ShowTodo {
   changeDetection: ChangeDetectionStrategy.OnPush,
 
   directives: [
-    FAREL_DIRECTIVES,
     ROUTER_DIRECTIVES,
-  ],
-
-  pipes: [
-    FAREL_PIPES,
   ],
 
   template: `
     <todo-key>{{ todosRef?.toString() }}</todo-key>
 
     <aside>
-      <ul class="todo" [query]="todosRef | limitToLast:10 | toArray" #todos="query">
-        <div *ngIf="!todos.$val">Loading...</div>
-
-        <li *ngFor="#todo of todos.$val">
+      <ul class="todo">
+        <li *ngFor="#todo of todosRef | async">
           <a [routerLink]="['Todo', { id: todo.$key }]">{{ todo.upperName() }}</a>
           <button (click)="removeTodo(todo.$ref)">Remove</button>
         </li>
@@ -83,10 +81,10 @@ class ShowTodo {
 ])
 
 export class App {
-  todosRef: Farel<TodoRecord>;
+  todosRef: FarelArray<TodoRecord>;
 
-  constructor(farel: Farel<FarelRecord>) {
-    this.todosRef = farel.child('todo', { useFactory: TodoRecord });
+  constructor(farel: Farel) {
+    this.todosRef = farel.asArray(ref => ref.child('todo'), TodoRecord);
   }
 
   addTodo(event: KeyboardEvent, name: string) {

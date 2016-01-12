@@ -8,7 +8,7 @@ export type FirebaseEventCallback = { eventType: FirebaseEventType, snapshot: Fi
 export type FirebaseEventInstruction = { eventType: FirebaseEventType, emitOnce?: boolean }
 
 export class FirebaseEmitter {
-  private _callbacks: Observable<FirebaseEventCallback>;
+  private _emitter: Observable<FirebaseEventCallback>;
 
   constructor(private _ref: FirebaseQuery, eventInstructions: FirebaseEventInstruction[]) {
     let observer = (observer: Observer<FirebaseEventCallback>) => {
@@ -38,11 +38,11 @@ export class FirebaseEmitter {
       return eventInstructions.reduce(subscribe.bind(this), () => { /* dispose */ });
     }
 
-    this._callbacks = Observable.create(observer);
+    this._emitter = Observable.create(observer);
   }
 
-  get callbacks(): Observable<FirebaseEventCallback> {
-    return this._callbacks;
+  get emitter(): Observable<FirebaseEventCallback> {
+    return this._emitter;
   }
 
   ref(): Firebase {
