@@ -20,7 +20,8 @@ Or include this script tag from the CDN:
 
 ## Basic Example
 
-[Live Demo](http://plnkr.co/edit/stDf4Ymr0SX5KGVbdh65)
+[Live Demo](http://plnkr.co/edit/TCKYpZCuCBhBKeGc1YU5?p=preview)
+
 
 ```typescript
 import { FAREL_BASE_URL, Farel, FarelArray, FarelRecord } from 'farel/farel';
